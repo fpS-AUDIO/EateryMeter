@@ -3,9 +3,57 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>EateryMeter</title>
+    <meta name="author" content="Alexander Ivanov" />
+    <meta
+      name="description"
+      content="EateryMeter: A comprehensive nutrition and lifestyle app for food enthusiasts. Seamlessly integrating with third-party APIs, EateryMeter provides users with a wealth of information on food nutrition, including calorie counts, allergen warnings, and BMI calculation tools. Additionally, it offers specialized insights into the world of wine, making it the perfect companion for those looking to enrich their dietary knowledge and make informed lifestyle choices. Designed for both beginners and seasoned foodies, EateryMeter aims to elevate the eating experience by offering smart, user-friendly tools for tracking, learning, and discovering the nutritional and enjoyable aspects of food and drink."
+    />
+    <!-- CDN google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" href="./src/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./src/css/style.css" />
+    <script defer type="module" src="./src/js/script.js"></script>
   </head>
   <body>
     <!-- https://spoonacular.com/food-api/docs#Ingredient-Search -->
+    <div class="app">
+      <header class="header">
+        <div class="header__logo--container">
+          <img
+            class="logo"
+            src="./src/img/logo.png"
+            alt="logo image EateryMeter"
+          />
+        </div>
+        <div class="header__links"></div>
+      </header>
+      <aside class="sidebar">
+        <ul class="features">
+          <li class="__features--feature">
+            <a href="#" class="feature--link">
+              <span class="feature--text">Body Mass Index</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+      <main class="main">
+        <article class="article">
+          <h1>HELLO WORLD</h1>
+          <h4>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque
+            voluptates totam eum voluptate voluptatem, aliquid vel magni
+            quisquam commodi perspiciatis earum ullam quis consequuntur
+            repellendus placeat asperiores architecto accusantium atque.
+          </h4>
+        </article>
+      </main>
+    </div>
   </body>
 </html>
