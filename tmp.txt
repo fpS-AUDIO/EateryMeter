@@ -1,0 +1,11 @@
+product:
+
+code
+brands
+countries
+image
+ingredients
+link
+quantity
+product_name
+https://www.levissima.it/acqua/naturale/bottiglia-1-5-litri/
