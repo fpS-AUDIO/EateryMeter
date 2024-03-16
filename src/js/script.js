@@ -1,9 +1,21 @@
 // import "core-js/stable";
 // import "regenerator-runtime/runtime";
+
 // https://spoonacular.com/food-api/docs#Ingredient-Search
 // https://openfoodfacts.github.io/openfoodfacts-server/api/ref-v2/#get-/api/v2/product/-barcode-
 // https://www.nutritionix.com/business/api
 // https://www.fruityvice.com/
+
+/* ----- TODO: 
+ V  add github link icon    
+ V  create home page
+ -  implmenet BMI View
+ -  implement MVC architecture
+ -  add functionality to BMI
+ -  implmenet fruityvice Card View 
+ -  add functionality to fruityvice
+ ...
+*/
 
 const app = document.querySelector(`.app`);
 const sideBar = document.querySelector(`.sidebar`);
@@ -42,4 +54,3 @@ const getInfoIngredient = async function (ingredient) {
 // getInfoProduct(`3017620422003`);
 // getInfoProduct(`80000532`);
 // getInfoProduct(`020357122682`);
-

@@ -1,0 +1,107 @@
+/*///////////////////
+// GENERAL CLASSES ////////////////////////////////////////////////////////
+///////////////////*/
+
+h1 {
+  color: var(--text-h1-color);
+  letter-spacing: 0.1rem;
+}
+
+.noSelect {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.noSelect:focus {
+  outline: none !important;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+  transform: all var(--transition-time) ease;
+}
+
+.painted {
+  filter: invert(20%) sepia(95%) saturate(750%) hue-rotate(80deg)
+    brightness(120%);
+}
+
+.container {
+  padding: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-colors);
+  background-color: var(--sidebar-containers-bg-color);
+  transition: all var(--transition-time) ease;
+}
+.container:hover {
+  box-shadow: var(--shadow-colors-hover);
+}
+
+.btn {
+  width: 6rem;
+  height: 3rem;
+  /* margin: 0.1rem; */
+  appearance: none;
+  backface-visibility: hidden;
+  background-color: var(--button-bg-color);
+  border-radius: var(--border-radius);
+  border-style: none;
+  box-shadow: var(--shadow-colors);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: all var(--transition-time) ease;
+  touch-action: manipulation;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background-color: var(--button-bg-color-hover);
+  opacity: 1;
+}
+
+.btn:active {
+  transform: translateY(2px);
+}
+
+.btn:hover {
+  box-shadow: var(--shadow-colors-hover);
+}
+
+.hidden-top {
+  transform: translateY(-20rem);
+  height: 0rem;
+  margin-bottom: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.hidden-right {
+  transform: translateX(20rem);
+  width: 0rem;
+  margin-bottom: 0;
+  opacity: 0;
+  overflow: hidden;
+}

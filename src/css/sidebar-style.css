@@ -1,0 +1,111 @@
+/*///////////
+// SIDEBAR ////////////////////////////////////////////////////////
+///////////*/
+
+.sidebar {
+  /* position: absolute; */
+  /* height: 100%; */
+  /* float: left; */
+  position: fixed;
+  height: auto;
+  margin-top: var(--header-height);
+  width: 4rem;
+  z-index: 5;
+
+  border-top: var(--border-width) solid var(--border-color);
+  border-right: var(--border-width) solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  background-color: rgba(203, 233, 200, 0.8);
+  overflow: hidden;
+  box-shadow: var(--shadow-colors);
+  transition: width var(--transition-time) ease;
+}
+@supports (backdrop-filter: blur(10px)) {
+  .sidebar {
+    background: linear-gradient(
+      135deg,
+      rgba(105, 200, 92, 0.1),
+      rgba(234, 243, 232, 0)
+    );
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+.sidebar:hover {
+  box-shadow: var(--shadow-colors-hover);
+}
+.sidebar.sidebar--expanded {
+  width: 16rem;
+}
+
+.sidebar.sidebar--expanded .feature--link {
+  display: inline-block;
+}
+
+.sidebar .sidebar-button--container {
+  display: flex;
+  justify-content: end;
+  margin: 1rem 0.5rem;
+}
+
+.sidebar #sibebar-opener {
+  display: none;
+}
+
+.sidebar .checkbox-img {
+  cursor: pointer;
+  transition: transform var(--transition-time) ease;
+}
+
+.sidebar .sibebar--label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar #sibebar-opener:checked ~ .sibebar--label .checkbox-img {
+  transform: rotate(-180deg);
+}
+
+.sidebar .features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.sidebar .__features--item {
+  width: 80%;
+  margin-bottom: 1rem;
+  transition: all var(--transition-time) ease;
+}
+
+.sidebar .__features--item:hover {
+  transform: scale(1.1);
+}
+.sidebar .__features--item:hover .painted {
+  filter: invert(20%) sepia(95%) saturate(750%) hue-rotate(80deg)
+    brightness(150%);
+}
+
+.sidebar .__feature--container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+}
+
+.sidebar .feature--link {
+  display: none;
+  padding-left: 1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: 1px;
+  font-weight: 800;
+}

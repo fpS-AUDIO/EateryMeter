@@ -1,0 +1,60 @@
+/*//////////
+// FOOTER ////////////////////////////////////////////////////////
+//////////*/
+
+.footer {
+  padding: 0 1rem;
+  padding-top: 1rem;
+  margin-left: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.footer .copyright {
+  text-align: center;
+  text-wrap: balance;
+  color: var(--color-light--1);
+}
+
+.footer hr {
+  width: 75%;
+  margin-top: 0.5rem;
+  border: 0;
+  height: 0.1rem;
+  background: rgb(69, 158, 81);
+  background: radial-gradient(
+    circle,
+    rgba(69, 158, 81, 0.927608543417367) 61%,
+    rgba(226, 230, 227, 1) 100%
+  );
+}
+
+.footer .social-links {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.footer .social-links--link {
+  padding: 0.5rem 0;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.footer .social-img {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-position: center;
+  /* padding: 1rem; */
+  filter: invert(86%) sepia(59%) saturate(367%) hue-rotate(70deg)
+    brightness(150%);
+  transition: all var(--transition-time) ease;
+}
+
+.footer .social-links--link:hover .social-img {
+  transform: translateY(-0.3rem);
+  filter: invert(150%) sepia(48%) saturate(370%) hue-rotate(70deg)
+    brightness(150%);
+}

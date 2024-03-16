@@ -1,0 +1,54 @@
+/*////////////
+// HOMEPAGE ////////////////////////////////////////////////////////
+////////////*/
+
+.homepage--container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-wrap: balance;
+  transition: all var(--transition-time) ease;
+}
+
+.homepage--container .img-wrapper--chef {
+  height: auto;
+  max-width: 20rem;
+}
+.homepage--container .homepage-content {
+  padding-top: 1rem;
+  border-left: 0.3rem solid var(--border-color);
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+}
+.homepage--container .homepage-content hr {
+  margin: 1rem 0;
+  width: 85%;
+}
+
+.homepage--container .btn--container {
+  padding-top: 1rem;
+  display: grid;
+  grid-auto-flow: row;
+  justify-items: end;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+  gap: 1.4rem;
+}
+
+@media (min-width: 1024px) {
+  .homepage--container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+  .homepage--container .homepage-content {
+    order: 1;
+    padding: min(2%, 5rem);
+  }
+  .homepage--container .img-wrapper--chef {
+    order: 2;
+  }
+  .homepage--container .btn--container {
+    justify-items: start;
+  }
+}
