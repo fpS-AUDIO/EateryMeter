@@ -606,6 +606,9 @@ var _homepageViewJs = require("./views/homepageView.js");
 var _homepageViewJsDefault = parcelHelpers.interopDefault(_homepageViewJs);
 var _bmiViewJs = require("./views/bmiView.js");
 var _bmiViewJsDefault = parcelHelpers.interopDefault(_bmiViewJs);
+// if (module.hot) {
+//   module.hot.accept();
+// }
 // ----- CONTROLLER FUNCTIONS ----- //
 const registerRoutes = function() {
     /**
@@ -639,6 +642,16 @@ const controlViewLinks = function(element) {
     // render currentView
     renderCurrentView();
 };
+const controlBMICalculator = function(data) {
+    // validate input data
+    if (data.height <= 0 || data.weight <= 0) {
+        (0, _bmiViewJsDefault.default).renderErrorWrongValue();
+        return;
+    }
+    // calculate the BMI and update state
+    _modelJs.calculateUpdateBMI(data);
+// console.dir(data);
+};
 // ----- ENTRY POINT FUNCTION ----- //
 const init = function() {
     /**
@@ -648,7 +661,7 @@ const init = function() {
     (0, _sidebarViewJsDefault.default).addHandlerManagerSibebar(controlSidebarWidth);
     (0, _sidebarViewJsDefault.default).addHandlerManagerLinks(controlViewLinks);
     (0, _homepageViewJsDefault.default).addHandlerButtonsLinks(controlViewLinks);
-// window.addEventListener('hashchange', handleHashChange);
+    (0, _bmiViewJsDefault.default).addHandlerBMICalculator(controlBMICalculator);
 };
 init();
 
@@ -2517,20 +2530,106 @@ parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "updateHash", ()=>updateHash);
 parcelHelpers.export(exports, "registerRoute", ()=>registerRoute);
 parcelHelpers.export(exports, "updateCurrentView", ()=>updateCurrentView);
+parcelHelpers.export(exports, "calculateUpdateBMI", ()=>calculateUpdateBMI);
 var _configJs = require("./config.js");
+var _bmiViewJs = require("./views/bmiView.js");
+var _bmiViewJsDefault = parcelHelpers.interopDefault(_bmiViewJs);
 const state = {
     currentView: null,
-    routes: {}
+    routes: {},
+    bmi: {
+        currentBMI: null,
+        currentLevel: null,
+        levels: {
+            lvl1: {
+                bmiValue: null,
+                color: `#6495ED`,
+                description: `Severe Underweight`,
+                min: 0,
+                max: 15.9
+            },
+            lvl2: {
+                bmiValue: null,
+                color: `#1E90FF`,
+                description: `Underweight`,
+                min: 16,
+                max: 18.4
+            },
+            lvl3: {
+                bmiValue: null,
+                color: `#32CD32`,
+                description: `Normal weight`,
+                min: 18.5,
+                max: 24.9
+            },
+            lvl4: {
+                bmiValue: null,
+                color: `#FFA500`,
+                description: `Overweight`,
+                min: 25,
+                max: 29.9
+            },
+            lvl5: {
+                bmiValue: null,
+                color: `#FF8C00`,
+                description: `Moderately obese`,
+                min: 30,
+                max: 34.9
+            },
+            lvl6: {
+                bmiValue: null,
+                color: `#FF4500`,
+                description: `Severely obese`,
+                min: 35,
+                max: 39.9
+            },
+            lvl7: {
+                bmiValue: null,
+                color: `#FF0000`,
+                description: `Very severely obese`,
+                min: 40,
+                max: 1000
+            }
+        }
+    }
+};
+// ----- HELPER FUNCTIONS ----- //
+const updateCurrentBMILevel = function() {
+    // Convert levels object to an array
+    const levelArray = Object.values(state.bmi.levels);
+    // Find the first level that matches with currentBMI
+    const matchingLevel = levelArray.find((level)=>{
+        return level.min <= state.bmi.currentBMI && level.max >= state.bmi.currentBMI;
+    });
+    // Update currentLevel of BMI with the found matching level
+    state.bmi.currentLevel = matchingLevel;
+    state.bmi.currentLevel.bmiValue = state.bmi.currentBMI;
 };
 const updateHash = function(element) {
+    // updates state: change hash (also in URL)
     state.hash = element.hash;
     window.location.hash = state.hash;
 };
 const registerRoute = function(hash, view) {
+    // updates state: add new view
     state.routes[hash] = view;
 };
 const updateCurrentView = function(hash) {
+    // updates state: update current view
     state.currentView = state.routes[hash];
+};
+const calculateUpdateBMI = function(data) {
+    // FORMULA: BMI = weight / (height * height)
+    // transform cm height in m
+    const heightMeters = data.height / 100;
+    // calculate the actual BMI
+    const actualBMI = data.weight / (heightMeters * heightMeters);
+    // update current BMI by rounding it to 1 decimal place and retransform in number
+    state.bmi.currentBMI = +actualBMI.toFixed(1);
+    // updatin currentLevel of BMI
+    updateCurrentBMILevel();
+    // update UI: bmiView
+    (0, _bmiViewJsDefault.default).renderResultBMI(state.bmi.currentLevel);
 }; // const getInfoProduct = async function (barcodeString) {
  //   try {
  //     const response = await fetch(`
@@ -2559,7 +2658,179 @@ const updateCurrentView = function(hash) {
  // getInfoProduct(`80000532`);
  // getInfoProduct(`020357122682`);
 
-},{"./config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eUObu":[function(require,module,exports) {
+},{"./config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/bmiView.js":"hSar1"}],"hSar1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _mainViewJs = require("./MainView.js");
+var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
+class BmiView extends (0, _mainViewJsDefault.default) {
+    //   _parentElement = document.querySelector(`bmi-view `);
+    _cleanResultContainer() {
+        this._mainElement.querySelector(`.bmi-container-result`).innerHTML = ``;
+    }
+    _generateMarkupHtml() {
+        return `
+    <div class="bmi-view hidden-right">
+        <div class="form--container">
+          <form class="bmi--form bmi--contaner">
+            <h2>Body Mass Index Adults</h2>
+            <div class="form__row">
+              <label class="form__label">Height</label>
+              <input type="number" class="form__input form__input--cm" placeholder="cm" />
+            </div>
+            <div class="form__row">
+              <label class="form__label">Weight</label>
+              <input type="number" class="form__input form__input--kg" placeholder="kg" />
+            </div>
+            <button class="btn calculate--bmi">Calculate</button>
+        </form>
+            <div class="bmi--contaner bmi-container-result">
+              <h2>Welcome to the BMI Calculator</h2>
+              <h3 class="bmi--result--sentence">Your results will be displayed here.</h3>
+            </div>
+        </div>
+
+        <article class="article">
+            <h2>What is BMI?</h2>
+            <p>
+              Body Mass Index (BMI) is a measurement that uses height and weight
+              to estimate a person's body fat, providing an easy and quick
+              method to assess whether someone has an appropriate body weight
+              for their height. BMI is widely used in the medical community to
+              screen for obesity, underweight, and healthy weight ranges, though
+              it does not directly measure body fat percentage.
+            </p>
+            <h2>How to Calculate BMI</h2>
+            <p>
+              BMI is calculated by dividing a person's weight in kilograms (kg)
+              by their height in meters (m) squared. The formula is:
+            </p>
+            <div class="formula">
+              BMI =
+              <span class="fraction"
+                ><span class="weight">Weight in kg</span
+                ><span class="line"></span
+                ><span class="height">(Height in m)<sup>2</sup></span></span
+              >
+            </div>
+            <h2>Interesting Facts about BMI</h2>
+            <ul>
+              <li>
+                <strong>Historical Context:</strong> The BMI was devised in the
+                early 19th century by Adolphe Quetelet, a Belgian astronomer,
+                mathematician, statistician, and sociologist. It was originally
+                called the Quetelet Index.
+              </li>
+              <li>
+                <strong>Global Standards Vary:</strong> While the World Health
+                Organization (WHO) provides a standard BMI classification, some
+                countries and regions have adapted their classifications to
+                better fit their population's health profiles.
+              </li>
+              <li>
+                <strong>Not a Direct Measure of Health:</strong> While BMI is a
+                useful screening tool, it does not directly measure body fat or
+                account for muscle mass, bone density, overall body composition,
+                and racial and sex differences.
+              </li>
+              <li>
+                <strong>Use in Public Health:</strong> BMI is widely used in
+                epidemiological studies to correlate the health effects of being
+                overweight or obese with population health.
+              </li>
+              <li>
+                <strong>Alternative Measurements: </strong> Due to BMI's
+                limitations, other measurements like waist-to-hip ratio (WHR),
+                waist-to-height ratio (WHtR), and body fat percentage are also
+                used to provide a more complete picture of an individual's
+                health.
+              </li>
+            </ul>
+        </article>
+    </div>
+    `;
+    }
+    _generateErrorMarkup() {
+        return `<h2>\u{26A0}\u{FE0F}Please Enter the Correct Value...</h2>`;
+    }
+    _generateResultMarkup(levelObject) {
+        return `
+    <h2>Your Body Mass Index is</h2>
+    <h1 class="bmi--result--number">${levelObject.bmiValue}</h1>
+    <h3 class="bmi--result--sentence">${levelObject.description}</h3>
+    `;
+    }
+    renderErrorWrongValue() {
+        this._cleanResultContainer();
+        const errorMarkup = this._generateErrorMarkup();
+        this._mainElement.querySelector(`.bmi-container-result`).innerHTML = errorMarkup;
+    }
+    renderResultBMI(levelObject) {
+        // clean container
+        this._cleanResultContainer();
+        // generate markup html
+        const resultMarkup = this._generateResultMarkup(levelObject);
+        // select DOM element result container
+        const containerResult = this._mainElement.querySelector(`.bmi-container-result`);
+        // update UI
+        containerResult.innerHTML = resultMarkup;
+        // dinamically update border color and font color
+        containerResult.style.borderColor = `${levelObject.color}`;
+        // dinamically update text color of description
+        containerResult.querySelector(`h3`).style.color = `${levelObject.color}`;
+    }
+    addHandlerBMICalculator(subscribeFunc) {
+        this._mainElement.addEventListener(`click`, (e)=>{
+            // check if button is clicked
+            const btnCalc = e.target.closest(`.calculate--bmi`);
+            if (!btnCalc) return;
+            // make sure the form is still there
+            const form = btnCalc.closest(`.bmi--form`);
+            if (!form) return;
+            // take the values from form and convert them into number
+            const cmValue = +form.querySelector(`.form__input--cm`).value;
+            const kgValue = +form.querySelector(`.form__input--kg`).value;
+            // empty the form from current values
+            form.querySelector(`.form__input--cm`).value = ``;
+            form.querySelector(`.form__input--kg`).value = ``;
+            // send object with input values to controller
+            subscribeFunc({
+                height: cmValue,
+                weight: kgValue
+            });
+        });
+    }
+}
+exports.default = new BmiView();
+
+},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8ymy6":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _configJs = require("../config.js");
+class MainView {
+    _mainElement = document.querySelector(`.main`);
+    render() {
+        this._clearMainContainer();
+        const markupHtml = this._generateMarkupHtml();
+        this._mainElement.insertAdjacentHTML(`afterbegin`, markupHtml);
+        this._setParentElement();
+        setTimeout(()=>{
+            this._showParentElement();
+        }, _configJs.DELAY_RENDER_VIEW_SEC * 1000);
+    }
+    _clearMainContainer() {
+        this._mainElement.innerHTML = ``;
+    }
+    _setParentElement() {
+        this._parentElement = this._mainElement.firstElementChild;
+    }
+    _showParentElement() {
+        this._parentElement.classList.remove(`hidden-right`);
+    }
+}
+exports.default = MainView;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../config.js":"k5Hzs"}],"eUObu":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 class SidebarView {
@@ -2640,34 +2911,7 @@ class HomepageView extends (0, _mainViewJsDefault.default) {
 }
 exports.default = new HomepageView();
 
-},{"./MainView.js":"8ymy6","../../img/chef.svg":"70Ss1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8ymy6":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _configJs = require("../config.js");
-class MainView {
-    _mainElement = document.querySelector(`.main`);
-    render() {
-        this._clearMainContainer();
-        const markupHtml = this._generateMarkupHtml();
-        this._mainElement.insertAdjacentHTML(`afterbegin`, markupHtml);
-        this._setParentElement();
-        setTimeout(()=>{
-            this._showParentElement();
-        }, _configJs.DELAY_RENDER_VIEW_SEC * 1000);
-    }
-    _clearMainContainer() {
-        this._mainElement.innerHTML = ``;
-    }
-    _setParentElement() {
-        this._parentElement = this._mainElement.firstElementChild;
-    }
-    _showParentElement() {
-        this._parentElement.classList.remove(`hidden-right`);
-    }
-}
-exports.default = MainView;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../config.js":"k5Hzs"}],"70Ss1":[function(require,module,exports) {
+},{"./MainView.js":"8ymy6","../../img/chef.svg":"70Ss1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"70Ss1":[function(require,module,exports) {
 module.exports = require("798a32a3db0abed8").getBundleURL("hWUTQ") + "chef.32d33305.svg" + "?" + Date.now();
 
 },{"798a32a3db0abed8":"lgJ39"}],"lgJ39":[function(require,module,exports) {
@@ -2705,99 +2949,6 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"hSar1":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _mainViewJs = require("./MainView.js");
-var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
-class BmiView extends (0, _mainViewJsDefault.default) {
-    //   _parentElement = document.querySelector(`bmi-view `);
-    _generateMarkupHtml() {
-        return `
-    <div class="bmi-view hidden-right">
-        <div class="form--container">
-            <form class="bmi--form bmi--contaner">
-                <h2>Body Mass Index Adults</h2>
-                <div class="form__row">
-                    <label class="form__label">Height</label>
-                    <input type="number" class="form__input" placeholder="cm" />
-                </div>
-                <div class="form__row">
-                    <label class="form__label">Weight</label>
-                    <input type="number" class="form__input" placeholder="kg" />
-                </div>
-                <button class="btn calculate--bmi">Calculate</button>
-            </form>
-            <div class="bmi--contaner bmi-container-result">
-                <h2>Your Body Mass Index is</h2>
-                <h1 class="bmi--result--number">24.9</h1>
-                <h3 class="bmi--result--sentence">Normal weight</h3>
-            </div>
-        </div>
-
-        <article class="article">
-            <h2>What is BMI?</h2>
-            <p>
-              Body Mass Index (BMI) is a measurement that uses height and weight
-              to estimate a person's body fat, providing an easy and quick
-              method to assess whether someone has an appropriate body weight
-              for their height. BMI is widely used in the medical community to
-              screen for obesity, underweight, and healthy weight ranges, though
-              it does not directly measure body fat percentage.
-            </p>
-            <h2>How to Calculate BMI</h2>
-            <p>
-              BMI is calculated by dividing a person's weight in kilograms (kg)
-              by their height in meters (m) squared. The formula is:
-            </p>
-            <div class="formula">
-              BMI =
-              <span class="fraction"
-                ><span class="weight">Weight in kg</span
-                ><span class="line"></span
-                ><span class="height">(Height in m)<sup>2</sup></span></span
-              >
-            </div>
-            <h2>Interesting Facts about BMI</h2>
-            <ul>
-              <li>
-                <strong>Historical Context:</strong> The BMI was devised in the
-                early 19th century by Adolphe Quetelet, a Belgian astronomer,
-                mathematician, statistician, and sociologist. It was originally
-                called the Quetelet Index.
-              </li>
-              <li>
-                <strong>Global Standards Vary:</strong> While the World Health
-                Organization (WHO) provides a standard BMI classification, some
-                countries and regions have adapted their classifications to
-                better fit their population's health profiles.
-              </li>
-              <li>
-                <strong>Not a Direct Measure of Health:</strong> While BMI is a
-                useful screening tool, it does not directly measure body fat or
-                account for muscle mass, bone density, overall body composition,
-                and racial and sex differences.
-              </li>
-              <li>
-                <strong>Use in Public Health:</strong> BMI is widely used in
-                epidemiological studies to correlate the health effects of being
-                overweight or obese with population health.
-              </li>
-              <li>
-                <strong>Alternative Measurements: </strong> Due to BMI's
-                limitations, other measurements like waist-to-hip ratio (WHR),
-                waist-to-height ratio (WHtR), and body fat percentage are also
-                used to provide a more complete picture of an individual's
-                health.
-              </li>
-            </ul>
-        </article>
-    </div>
-    `;
-    }
-}
-exports.default = new BmiView();
-
-},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["hycaY","aenu9"], "aenu9", "parcelRequire8f4a")
+},{}]},["hycaY","aenu9"], "aenu9", "parcelRequire8f4a")
 
 //# sourceMappingURL=index.e37f48ea.js.map

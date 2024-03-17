@@ -8,6 +8,10 @@ import sidebarView from "./views/sidebarView.js";
 import homepageView from "./views/homepageView.js";
 import bmiView from "./views/bmiView.js";
 
+// if (module.hot) {
+//   module.hot.accept();
+// }
+
 // ----- CONTROLLER FUNCTIONS ----- //
 
 const registerRoutes = function () {
@@ -54,6 +58,19 @@ const controlViewLinks = function (element) {
   renderCurrentView();
 };
 
+const controlBMICalculator = function (data) {
+  // validate input data
+  if (data.height <= 0 || data.weight <= 0) {
+    bmiView.renderErrorWrongValue();
+    return;
+  }
+
+  // calculate the BMI and update state
+  model.calculateUpdateBMI(data);
+
+  // console.dir(data);
+};
+
 // ----- ENTRY POINT FUNCTION ----- //
 
 const init = function () {
@@ -65,7 +82,7 @@ const init = function () {
   sidebarView.addHandlerManagerSibebar(controlSidebarWidth);
   sidebarView.addHandlerManagerLinks(controlViewLinks);
   homepageView.addHandlerButtonsLinks(controlViewLinks);
-  // window.addEventListener('hashchange', handleHashChange);
+  bmiView.addHandlerBMICalculator(controlBMICalculator);
 };
 init();
 

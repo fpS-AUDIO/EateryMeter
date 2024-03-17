@@ -3,19 +3,27 @@
 }
 
 .bmi-view .form--container {
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
   grid-auto-flow: row;
   gap: 2rem;
   display: grid;
 }
 
+@media (width <= 320px) {
+  .bmi-view .form--container {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+}
+
 .bmi-view .bmi--contaner {
+  text-align: start;
   text-wrap: balance;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
   background-color: var(--sidebar-containers-bg-color);
   transition: all var(--transition-time) ease;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   min-height: 14rem;
   padding: 1rem;
@@ -73,6 +81,7 @@
 }
 
 .bmi-view .bmi-container-result {
+  text-align: center;
   border-color: green;
   border-left-style: solid;
   border-left-width: .5rem;

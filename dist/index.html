@@ -130,19 +130,28 @@
               <h2>Body Mass Index Adults</h2>
               <div class="form__row">
                 <label class="form__label">Height</label>
-                <input type="number" class="form__input" placeholder="cm" />
+                <input type="number" class="form__input form__input--cm" placeholder="cm" />
               </div>
               <div class="form__row">
                 <label class="form__label">Weight</label>
-                <input type="number" class="form__input" placeholder="kg" />
+                <input type="number" class="form__input form__input--kg" placeholder="kg" />
               </div>
               <button class="btn calculate--bmi">Calculate</button>
             </form>
 
             <div class="bmi--contaner bmi-container-result">
+
+              WELCOME MESSAGE:
+              <h2>Welcome to the BMI Calculator</h2>
+              <h3 class="bmi--result--sentence">Your results will be displayed here.</h3>
+
+              RESULT:
               <h2>Your Body Mass Index is</h2>
               <h1 class="bmi--result--number">24.9</h1>
               <h3 class="bmi--result--sentence">Normal weight</h3>
+
+              ERROR: 
+              <h2>⚠️Please Enter the Correct Value...</h2>
             </div>
           </div>
 

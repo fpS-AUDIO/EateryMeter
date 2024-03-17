@@ -2,26 +2,30 @@ import MainView from "./MainView.js";
 
 class BmiView extends MainView {
   //   _parentElement = document.querySelector(`bmi-view `);
+
+  _cleanResultContainer() {
+    this._mainElement.querySelector(`.bmi-container-result`).innerHTML = ``;
+  }
+
   _generateMarkupHtml() {
     return `
     <div class="bmi-view hidden-right">
         <div class="form--container">
-            <form class="bmi--form bmi--contaner">
-                <h2>Body Mass Index Adults</h2>
-                <div class="form__row">
-                    <label class="form__label">Height</label>
-                    <input type="number" class="form__input" placeholder="cm" />
-                </div>
-                <div class="form__row">
-                    <label class="form__label">Weight</label>
-                    <input type="number" class="form__input" placeholder="kg" />
-                </div>
-                <button class="btn calculate--bmi">Calculate</button>
-            </form>
+          <form class="bmi--form bmi--contaner">
+            <h2>Body Mass Index Adults</h2>
+            <div class="form__row">
+              <label class="form__label">Height</label>
+              <input type="number" class="form__input form__input--cm" placeholder="cm" />
+            </div>
+            <div class="form__row">
+              <label class="form__label">Weight</label>
+              <input type="number" class="form__input form__input--kg" placeholder="kg" />
+            </div>
+            <button class="btn calculate--bmi">Calculate</button>
+        </form>
             <div class="bmi--contaner bmi-container-result">
-                <h2>Your Body Mass Index is</h2>
-                <h1 class="bmi--result--number">24.9</h1>
-                <h3 class="bmi--result--sentence">Normal weight</h3>
+              <h2>Welcome to the BMI Calculator</h2>
+              <h3 class="bmi--result--sentence">Your results will be displayed here.</h3>
             </div>
         </div>
 
@@ -85,6 +89,72 @@ class BmiView extends MainView {
     </div>
     `;
   }
-}
 
+  _generateErrorMarkup() {
+    return `<h2>⚠️Please Enter the Correct Value...</h2>`;
+  }
+
+  _generateResultMarkup(levelObject) {
+    return `
+    <h2>Your Body Mass Index is</h2>
+    <h1 class="bmi--result--number">${levelObject.bmiValue}</h1>
+    <h3 class="bmi--result--sentence">${levelObject.description}</h3>
+    `;
+  }
+
+  renderErrorWrongValue() {
+    this._cleanResultContainer();
+    const errorMarkup = this._generateErrorMarkup();
+    this._mainElement.querySelector(`.bmi-container-result`).innerHTML =
+      errorMarkup;
+  }
+
+  renderResultBMI(levelObject) {
+    // clean container
+    this._cleanResultContainer();
+
+    // generate markup html
+    const resultMarkup = this._generateResultMarkup(levelObject);
+
+    // select DOM element result container
+    const containerResult = this._mainElement.querySelector(
+      `.bmi-container-result`
+    );
+
+    // update UI
+    containerResult.innerHTML = resultMarkup;
+
+    // dinamically update border color and font color
+    containerResult.style.borderColor = `${levelObject.color}`;
+
+    // dinamically update text color of description
+    containerResult.querySelector(`h3`).style.color = `${levelObject.color}`;
+  }
+
+  addHandlerBMICalculator(subscribeFunc) {
+    this._mainElement.addEventListener(`click`, (e) => {
+      // check if button is clicked
+      const btnCalc = e.target.closest(`.calculate--bmi`);
+      if (!btnCalc) return;
+
+      // make sure the form is still there
+      const form = btnCalc.closest(`.bmi--form`);
+      if (!form) return;
+
+      // take the values from form and convert them into number
+      const cmValue = +form.querySelector(`.form__input--cm`).value;
+      const kgValue = +form.querySelector(`.form__input--kg`).value;
+
+      // empty the form from current values
+      form.querySelector(`.form__input--cm`).value = ``;
+      form.querySelector(`.form__input--kg`).value = ``;
+
+      // send object with input values to controller
+      subscribeFunc({
+        height: cmValue,
+        weight: kgValue,
+      });
+    });
+  }
+}
 export default new BmiView();

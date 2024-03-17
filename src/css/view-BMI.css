@@ -4,18 +4,29 @@
 .bmi-view {
   transition: all var(--transition-time-slow) ease;
 }
+
 .bmi-view .form--container {
   display: grid;
   grid-auto-flow: row;
   /* grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr)); */
-  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  /* grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); */
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
   gap: 2rem;
 }
+
+@media (max-width: 320px) {
+  .bmi-view .form--container {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+}
+
 .bmi-view .bmi--contaner {
   min-height: 14rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: start;
   padding: 1rem;
   text-wrap: balance;
   overflow: hidden;
@@ -75,6 +86,7 @@
 /* result */
 
 .bmi-view .bmi-container-result {
+  text-align: center;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left: 0.5rem solid;
