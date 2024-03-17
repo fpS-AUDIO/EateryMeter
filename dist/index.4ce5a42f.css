@@ -24,8 +24,15 @@ h1 {
 
 .icon {
   transform: all var(--transition-time) ease;
-  width: 2rem;
-  height: 2rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (width >= 600px) {
+  .icon {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 
 .painted {

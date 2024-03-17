@@ -2791,11 +2791,12 @@ class BmiView extends (0, _mainViewJsDefault.default) {
     }
     addHandlerBMICalculator(subscribeFunc) {
         this._mainElement.addEventListener(`click`, (e)=>{
+            e.preventDefault();
             // check if button is clicked
             const btnCalc = e.target.closest(`.calculate--bmi`);
             if (!btnCalc) return;
             // make sure the form is still there
-            const form = btnCalc.closest(`.bmi--form`);
+            // const form = btnCalc.closest(`.bmi--form`);
             if (!form) return;
             // take the values from form and convert them into number
             const cmValue = +form.querySelector(`.form__input--cm`).value;
@@ -2850,8 +2851,17 @@ class SidebarView {
     openCloseSidebar(boolean) {
         /**
      * opens sidebar if recieved boolean argument is true
-     */ if (boolean) this._parentElement.classList.add(`sidebar--expanded`);
-        else this._parentElement.classList.remove(`sidebar--expanded`);
+     */ if (boolean) {
+            this._parentElement.classList.add(`sidebar--expanded`);
+            this._parentElement.querySelectorAll(`.__feature--container`).forEach((el)=>{
+                el.classList.add(`expanded`);
+            });
+        } else {
+            this._parentElement.classList.remove(`sidebar--expanded`);
+            this._parentElement.querySelectorAll(`.__feature--container`).forEach((el)=>{
+                el.classList.remove(`expanded`);
+            });
+        }
     }
     closeSidebar() {
         // exit function if sidebar is not opened

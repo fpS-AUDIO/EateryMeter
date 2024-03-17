@@ -9,7 +9,7 @@
   position: fixed;
   height: auto;
   margin-top: var(--header-height);
-  width: 4rem;
+  width: 2rem;
   z-index: 5;
 
   border-top: var(--border-width) solid var(--border-color);
@@ -21,6 +21,12 @@
   overflow: hidden;
   box-shadow: var(--shadow-colors);
   transition: width var(--transition-time) ease;
+}
+
+@media (min-width: 600px) {
+  .sidebar {
+    width: 4rem;
+  }
 }
 
 @supports (backdrop-filter: blur(10px)) {
@@ -48,7 +54,14 @@
 .sidebar .sidebar-button--container {
   display: flex;
   justify-content: end;
-  margin: 1rem 0.5rem;
+  margin: 1rem 0;
+  padding-right: 10%;
+}
+
+@media (max-width: 600px) {
+  .sidebar .sidebar-button--container {
+    padding: 0 0.2rem;
+  }
 }
 
 .sidebar #sibebar-opener {
@@ -65,6 +78,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  /* padding: 0.5rem; */
 }
 
 .sidebar #sibebar-opener:checked ~ .sibebar--label .checkbox-img {
@@ -94,10 +108,14 @@
 }
 
 .sidebar .__feature--container {
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+}
+
+.__feature--container.expanded {
   justify-content: start;
 }
 

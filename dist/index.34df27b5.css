@@ -10,4 +10,10 @@
 .main:last-child {
   margin-top: auto;
 }
+
+@media (width <= 600px) {
+  .main {
+    padding: 1rem 1rem 1rem 3rem;
+  }
+}
 /*# sourceMappingURL=index.34df27b5.css.map */

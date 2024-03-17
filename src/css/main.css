@@ -16,3 +16,10 @@
 .main:last-child {
   margin-top: auto;
 }
+
+@media (max-width: 600px) {
+  .main {
+    padding: 1rem;
+    padding-left: 3rem;
+  }
+}

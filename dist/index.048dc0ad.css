@@ -9,10 +9,16 @@
   box-shadow: var(--shadow-colors);
   transition: width var(--transition-time) ease;
   background-color: #cbe9c8cc;
-  width: 4rem;
+  width: 2rem;
   height: auto;
   position: fixed;
   overflow: hidden;
+}
+
+@media (width >= 600px) {
+  .sidebar {
+    width: 4rem;
+  }
 }
 
 @supports ((-webkit-backdrop-filter: blur(10px))) or (backdrop-filter: blur(10px)) {
@@ -36,8 +42,15 @@
 
 .sidebar .sidebar-button--container {
   justify-content: end;
-  margin: 1rem .5rem;
+  margin: 1rem 0;
+  padding-right: 10%;
   display: flex;
+}
+
+@media (width <= 600px) {
+  .sidebar .sidebar-button--container {
+    padding: 0 .2rem;
+  }
 }
 
 .sidebar #sibebar-opener {
@@ -84,10 +97,13 @@
 
 .sidebar .__feature--container {
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
-  height: 100%;
   display: flex;
+}
+
+.__feature--container.expanded {
+  justify-content: start;
 }
 
 .sidebar .feature--link {

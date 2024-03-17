@@ -1,0 +1,2 @@
+.comingsoon--container{border-radius:var(--border-radius);box-shadow:var(--shadow-colors);background-color:var(--sidebar-containers-bg-color);transition:all var(--transition-time)ease;margin:1rem;padding:1rem;overflow:hidden}.comingsoon--container:hover{box-shadow:var(--shadow-colors-hover)}.comingsoon--container .comingsoon--hr{background-color:var(--text-h1-color);border:0;width:75%;height:.1rem;margin:1rem 0}
+/*# sourceMappingURL=index.e7c0eb52.css.map */

@@ -2,7 +2,7 @@
   "name": "eaterymeter",
   "version": "1.0.0",
   "description": "EateryMeter: A comprehensive nutrition and lifestyle app for food enthusiasts.",
-  "default": "index.js",
+  "default": "index.html",
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html --dist-dir ./dist"

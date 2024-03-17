@@ -29,9 +29,17 @@ h1 {
 }
 
 .icon {
-  width: 2rem;
-  height: 2rem;
+  width: 1rem;
+  height: 1rem;
+  /* margin: 0.5rem; */
   transform: all var(--transition-time) ease;
+}
+
+@media (min-width: 600px) {
+  .icon {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 
 .painted {
