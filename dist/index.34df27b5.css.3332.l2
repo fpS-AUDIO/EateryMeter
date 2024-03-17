@@ -1,0 +1,14 @@
+.main {
+  text-wrap: balance;
+  flex-flow: column;
+  flex-grow: 1;
+  justify-content: space-between;
+  padding: 2rem 2rem 2rem 6rem;
+  display: flex;
+  overflow: hidden;
+}
+
+.main:last-child {
+  margin-top: auto;
+}
+/*# sourceMappingURL=index.34df27b5.css.map */

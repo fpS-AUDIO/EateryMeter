@@ -12,6 +12,7 @@
   --button-bg-color: #27ae60;
   --button-bg-color-hover: #1e8449;
   --transition-time: 250ms;
+  --transition-time-slow: 500ms;
 
   --sidebar-containers-bg-color: rgba(225, 240, 216, 0.5);
 
@@ -82,5 +83,6 @@ body {
   body .app {
     width: 85vw;
     min-height: 85vh;
+    margin-top: 2rem;
   }
 }

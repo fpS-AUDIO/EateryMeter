@@ -12,6 +12,7 @@
   justify-content: space-between;
   text-wrap: balance;
 }
+
 .main:last-child {
   margin-top: auto;
 }
