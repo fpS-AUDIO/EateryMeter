@@ -48,6 +48,7 @@ h1 {
   background-color: var(--sidebar-containers-bg-color);
   transition: all var(--transition-time) ease;
 }
+
 .container:hover {
   box-shadow: var(--shadow-colors-hover);
 }

@@ -9,7 +9,7 @@
   overflow: hidden;
   display: flex;
   flex-flow: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   text-wrap: balance;
 }
 

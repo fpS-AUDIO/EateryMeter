@@ -606,6 +606,10 @@ var _homepageViewJs = require("./views/homepageView.js");
 var _homepageViewJsDefault = parcelHelpers.interopDefault(_homepageViewJs);
 var _bmiViewJs = require("./views/bmiView.js");
 var _bmiViewJsDefault = parcelHelpers.interopDefault(_bmiViewJs);
+var _fruitInfoViewJs = require("./views/fruitInfoView.js");
+var _fruitInfoViewJsDefault = parcelHelpers.interopDefault(_fruitInfoViewJs);
+var _barcodeViewJs = require("./views/barcodeView.js");
+var _barcodeViewJsDefault = parcelHelpers.interopDefault(_barcodeViewJs);
 // if (module.hot) {
 //   module.hot.accept();
 // }
@@ -618,6 +622,8 @@ const registerRoutes = function() {
    *
    */ _modelJs.registerRoute("home", (0, _homepageViewJsDefault.default));
     _modelJs.registerRoute("bmi", (0, _bmiViewJsDefault.default));
+    _modelJs.registerRoute("fruit", (0, _fruitInfoViewJsDefault.default));
+    _modelJs.registerRoute("barcode", (0, _barcodeViewJsDefault.default));
 // ... Register other routes here when needed ...
 };
 const controlSidebarWidth = function(boolean) {
@@ -639,6 +645,8 @@ const controlViewLinks = function(element) {
     const currentHash = _modelJs.state.hash.slice(1);
     // update state (currentView property)
     _modelJs.updateCurrentView(currentHash);
+    // close sidebar
+    (0, _sidebarViewJsDefault.default).closeSidebar();
     // render currentView
     renderCurrentView();
 };
@@ -665,7 +673,7 @@ const init = function() {
 };
 init();
 
-},{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./config.js":"k5Hzs","./model.js":"Y4A21","./views/sidebarView.js":"eUObu","./views/homepageView.js":"5HgCT","./views/bmiView.js":"hSar1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"49tUX":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./config.js":"k5Hzs","./model.js":"Y4A21","./views/sidebarView.js":"eUObu","./views/homepageView.js":"5HgCT","./views/bmiView.js":"hSar1","./views/fruitInfoView.js":"3vIxL","./views/barcodeView.js":"ktkUL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"49tUX":[function(require,module,exports) {
 "use strict";
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
 require("52e9b3eefbbce1ed");
@@ -2491,7 +2499,9 @@ try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "DELAY_RENDER_VIEW_SEC", ()=>DELAY_RENDER_VIEW_SEC);
+parcelHelpers.export(exports, "DELAY_AUTOCLOSE_SIDEBAR_SEC", ()=>DELAY_AUTOCLOSE_SIDEBAR_SEC);
 const DELAY_RENDER_VIEW_SEC = 0.1;
+const DELAY_AUTOCLOSE_SIDEBAR_SEC = 1;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -2658,7 +2668,7 @@ const calculateUpdateBMI = function(data) {
  // getInfoProduct(`80000532`);
  // getInfoProduct(`020357122682`);
 
-},{"./config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/bmiView.js":"hSar1"}],"hSar1":[function(require,module,exports) {
+},{"./config.js":"k5Hzs","./views/bmiView.js":"hSar1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hSar1":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _mainViewJs = require("./MainView.js");
@@ -2830,9 +2840,10 @@ class MainView {
 }
 exports.default = MainView;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../config.js":"k5Hzs"}],"eUObu":[function(require,module,exports) {
+},{"../config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eUObu":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+var _configJs = require("../config.js");
 class SidebarView {
     _parentElement = document.querySelector(`.sidebar`);
     _sidebarCheckbox = document.getElementById(`sibebar-opener`);
@@ -2841,6 +2852,16 @@ class SidebarView {
      * opens sidebar if recieved boolean argument is true
      */ if (boolean) this._parentElement.classList.add(`sidebar--expanded`);
         else this._parentElement.classList.remove(`sidebar--expanded`);
+    }
+    closeSidebar() {
+        // exit function if sidebar is not opened
+        if (!this._parentElement.classList.contains(`sidebar--expanded`)) return;
+        // remove checkbox
+        this._parentElement.querySelector(`.sidebar--checkbox`).checked = false;
+        // and actually close sidebar after given seconds
+        setTimeout(()=>{
+            this._parentElement.classList.remove(`sidebar--expanded`);
+        }, _configJs.DELAY_AUTOCLOSE_SIDEBAR_SEC * 1000);
     }
     addHandlerManagerSibebar(subscribeFunc) {
         // listening on changes of ckeckbox
@@ -2860,7 +2881,7 @@ class SidebarView {
 }
 exports.default = new SidebarView();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5HgCT":[function(require,module,exports) {
+},{"../config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5HgCT":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _mainViewJs = require("./MainView.js");
@@ -2949,6 +2970,58 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}]},["hycaY","aenu9"], "aenu9", "parcelRequire8f4a")
+},{}],"3vIxL":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _mainViewJs = require("./MainView.js");
+var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
+class FruitInfoView extends (0, _mainViewJsDefault.default) {
+    _generateMarkupHtml() {
+        return `
+    <article class="article comingsoon--container hidden-right">
+        <h1>\u{1F34E} Fruit Nutritional Encyclopedia - Coming Soon! \u{1F34C}</h1>
+        <hr class="comingsoon--hr" />
+        <h4>
+            Get ready to explore a world of flavors and nutrition! Our upcoming
+            feature will unlock the secrets behind every bite of your favorite
+            fruits. From avocados to zucchinis, discover fascinating data like
+            calories, sugar content, and much more. Whether you're a fitness
+            enthusiast or just looking to make healthier food choices, this
+            feature will be your ultimate guide to the nutritional value of
+            fruits. Stay tuned for an exciting journey to wellness!
+        </h4>
+    </article>
+    `;
+    }
+}
+exports.default = new FruitInfoView();
+
+},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktkUL":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _mainViewJs = require("./MainView.js");
+var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
+class BarcodeView extends (0, _mainViewJsDefault.default) {
+    _generateMarkupHtml() {
+        return `
+    <article class="article comingsoon--container hidden-right">
+        <h1>\u{1F50D} Product Barcode Nutrition Scanner - Coming Soon! \u{1F6D2}</h1>
+        <hr class="comingsoon--hr" />
+        <h4>
+            Imagine having the power to uncover the nutritional facts of
+            packaged products with just a scan! Our forthcoming feature will
+            make this a reality, allowing you to get detailed information about
+            a product by simply scanning its barcode. Perfect for those who are
+            meticulous about what goes into their grocery basket, this tool will
+            help you make informed choices effortlessly. Gear up for a smarter,
+            healthier shopping experience!
+        </h4>
+    </article>
+    `;
+    }
+}
+exports.default = new BarcodeView();
+
+},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["hycaY","aenu9"], "aenu9", "parcelRequire8f4a")
 
 //# sourceMappingURL=index.e37f48ea.js.map

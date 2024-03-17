@@ -7,6 +7,8 @@ import * as model from "./model.js";
 import sidebarView from "./views/sidebarView.js";
 import homepageView from "./views/homepageView.js";
 import bmiView from "./views/bmiView.js";
+import fruitInfoView from "./views/fruitInfoView.js";
+import barcodeView from "./views/barcodeView.js";
 
 // if (module.hot) {
 //   module.hot.accept();
@@ -23,6 +25,8 @@ const registerRoutes = function () {
    */
   model.registerRoute("home", homepageView);
   model.registerRoute("bmi", bmiView);
+  model.registerRoute("fruit", fruitInfoView);
+  model.registerRoute("barcode", barcodeView);
   // ... Register other routes here when needed ...
 };
 
@@ -53,6 +57,9 @@ const controlViewLinks = function (element) {
 
   // update state (currentView property)
   model.updateCurrentView(currentHash);
+
+  // close sidebar
+  sidebarView.closeSidebar();
 
   // render currentView
   renderCurrentView();

@@ -4,3 +4,4 @@
 // https://www.fruityvice.com/
 
 export const DELAY_RENDER_VIEW_SEC = 0.1;
+export const DELAY_AUTOCLOSE_SIDEBAR_SEC = 1;
