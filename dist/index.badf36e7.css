@@ -1,6 +1,6 @@
 .homepage--container {
   text-wrap: balance;
-  transition: all var(--transition-time-slow) ease;
+  transition: all var(--transition-time) linear;
   flex-direction: column;
   justify-content: center;
   align-items: center;

@@ -1,5 +1,5 @@
 .bmi-view {
-  transition: all var(--transition-time-slow) ease;
+  transition: all var(--transition-time) ease;
 }
 
 .bmi-view .form--container {
@@ -20,7 +20,7 @@
   text-wrap: balance;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
-  background-color: var(--sidebar-containers-bg-color);
+  background-color: var(--general-container-bg-color-2);
   transition: all var(--transition-time) ease;
   flex-direction: column;
   justify-content: center;
@@ -29,6 +29,12 @@
   padding: 1rem;
   display: flex;
   overflow: hidden;
+}
+
+@supports ((-webkit-backdrop-filter: blur(10px))) or (backdrop-filter: blur(10px)) {
+  .bmi-view .bmi--contaner {
+    backdrop-filter: blur(10px);
+  }
 }
 
 .bmi-view .bmi--contaner:hover {
@@ -64,8 +70,8 @@
 .bmi-view .form__input {
   border: none;
   border-bottom: var(--border-width) solid var(--text-h1-color);
-  background-color: var(--color-light--3);
   transition: all var(--transition-time) ease;
+  background-color: #ffffff80;
   width: 100%;
   padding-left: 1rem;
   font-size: 1.5rem;
@@ -90,11 +96,18 @@
 }
 
 .bmi-view .article {
+  background-color: var(--general-container-bg-color-2);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
   transition: all var(--transition-time) ease;
   margin-top: 2rem;
   padding: 1rem;
+}
+
+@supports ((-webkit-backdrop-filter: blur(10px))) or (backdrop-filter: blur(10px)) {
+  .bmi-view .article {
+    backdrop-filter: blur(10px);
+  }
 }
 
 .bmi-view .article:hover {

@@ -140,7 +140,7 @@ class BmiView extends MainView {
       if (!btnCalc) return;
 
       // make sure the form is still there
-      // const form = btnCalc.closest(`.bmi--form`);
+      const form = btnCalc.closest(`.bmi--form`);
       if (!form) return;
 
       // take the values from form and convert them into number

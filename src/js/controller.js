@@ -48,7 +48,7 @@ const renderCurrentView = function () {
   }
 };
 
-const controlViewLinks = function (element) {
+const controlViewLinks = async function (element) {
   // update hash in url and state
   model.updateHash(element);
 
@@ -57,6 +57,12 @@ const controlViewLinks = function (element) {
 
   // update state (currentView property)
   model.updateCurrentView(currentHash);
+
+  // close sidebar
+  // sidebarView.closeSidebar().then(() => {
+  //   console.log(`4: start rendering`);
+  //   renderCurrentView();
+  // });
 
   // close sidebar
   sidebarView.closeSidebar();

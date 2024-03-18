@@ -2,14 +2,12 @@
 // HOMEPAGE ////////////////////////////////////////////////////////
 ////////////*/
 .bmi-view {
-  transition: all var(--transition-time-slow) ease;
+  transition: all var(--transition-time) ease;
 }
 
 .bmi-view .form--container {
   display: grid;
   grid-auto-flow: row;
-  /* grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr)); */
-  /* grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); */
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 2rem;
 }
@@ -32,8 +30,14 @@
   overflow: hidden;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
-  background-color: var(--sidebar-containers-bg-color);
+  background-color: var(--general-container-bg-color-2);
   transition: all var(--transition-time) ease;
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .bmi-view .bmi--contaner {
+    backdrop-filter: blur(10px);
+  }
 }
 
 .bmi-view .bmi--contaner:hover {
@@ -69,9 +73,9 @@
   width: 100%;
   padding-left: 1rem;
   font-size: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.5);
   border: none;
   border-bottom: var(--border-width) solid var(--text-h1-color);
-  background-color: var(--color-light--3);
   transition: all var(--transition-time) ease;
 }
 .bmi-view .form__input:focus {
@@ -98,11 +102,16 @@
 .bmi-view .article {
   margin-top: 2rem;
   padding: 1rem;
+  background-color: var(--general-container-bg-color-2);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
   transition: all var(--transition-time) ease;
 }
-
+@supports (backdrop-filter: blur(10px)) {
+  .bmi-view .article {
+    backdrop-filter: blur(10px);
+  }
+}
 .bmi-view .article:hover {
   box-shadow: var(--shadow-colors-hover);
 }

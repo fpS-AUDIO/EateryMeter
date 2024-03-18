@@ -43,7 +43,7 @@ h1 {
   cursor: pointer;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
-  background-color: var(--sidebar-containers-bg-color);
+  background-color: var(--general-container-bg-color);
   transition: all var(--transition-time) ease;
   padding: .5rem;
   overflow: hidden;
@@ -93,8 +93,7 @@ h1 {
 
 .hidden-top {
   opacity: 0;
-  height: 0;
-  margin-bottom: 0;
+  filter: blur(5px);
   overflow: hidden;
   transform: translateY(-20rem);
 }
@@ -102,13 +101,7 @@ h1 {
 .hidden-right {
   opacity: 0;
   filter: blur(5px);
-  width: 0;
-  margin-bottom: 0;
   overflow: hidden;
   transform: translateX(20rem);
-}
-
-.displayOff {
-  display: none;
 }
 /*# sourceMappingURL=index.4ce5a42f.css.map */

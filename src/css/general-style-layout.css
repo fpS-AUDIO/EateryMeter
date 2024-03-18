@@ -3,6 +3,8 @@
   --text-primary: #212121;
   --text-secondary: #fff;
   --text-h1-color: #0b6809;
+  --app-bg-color: #fbfbfb;
+  --app-bg-color-secondary: ;
 
   --header-height: 4rem;
   --border-color: rgba(146, 170, 131, 0.3);
@@ -12,9 +14,11 @@
   --button-bg-color: #27ae60;
   --button-bg-color-hover: #1e8449;
   --transition-time: 250ms;
-  --transition-time-slow: 500ms;
+  --transition-time-slow: 300ms;
 
-  --sidebar-containers-bg-color: rgba(225, 240, 216, 0.5);
+  --sidebar-bg-color: rgba(227, 227, 227, 0.5);
+  --general-container-bg-color: rgba(251, 251, 251, 0.8);
+  --general-container-bg-color-2: rgba(251, 251, 251, 0.1);
 
   --shadow-colors: rgba(50, 50, 93, 0.4) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
@@ -59,30 +63,35 @@ body {
 //////////*/
 
 .app {
+  /* general */
   width: 100vw;
   min-height: 100svh;
-
   position: relative;
   overflow: hidden;
 
+  /* display flex */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  background: rgb(226, 237, 219);
-  background: linear-gradient(
-    225deg,
-    rgba(226, 237, 219, 1) 22%,
-    rgba(239, 239, 239, 1) 100%
-  );
+  /* border */
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
+
+  /* background */
+  background-color: var(--app-bg-color);
+  /* background-image: url("../img/animated-shape.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center; */
+
+  transition: height 2s linear;
 }
 
 @media (min-width: 600px) {
   body .app {
     width: 85vw;
     min-height: 85vh;
-    margin-top: 2rem;
+    margin: 2rem;
   }
 }

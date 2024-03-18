@@ -3,6 +3,8 @@
   --text-primary: #212121;
   --text-secondary: #fff;
   --text-h1-color: #0b6809;
+  --app-bg-color: #fbfbfb;
+  --app-bg-color-secondary: ;
   --header-height: 4rem;
   --border-color: #92aa834d;
   --border-width: .1rem;
@@ -10,8 +12,10 @@
   --button-bg-color: #27ae60;
   --button-bg-color-hover: #1e8449;
   --transition-time: .25s;
-  --transition-time-slow: .5s;
-  --sidebar-containers-bg-color: #e1f0d880;
+  --transition-time-slow: .3s;
+  --sidebar-bg-color: #e3e3e380;
+  --general-container-bg-color: #fbfbfbcc;
+  --general-container-bg-color-2: #fbfbfb1a;
   --shadow-colors: #32325d66 0px 6px 12px -2px, #0000004d 0px 3px 7px -3px;
   --shadow-colors-hover: #266f1c66 0px 6px 12px -2px, #1851114d 0px 3px 7px -3px;
 }
@@ -40,11 +44,12 @@ html, body {
 .app {
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
-  background: linear-gradient(225deg, #e2eddb 22%, #efefef 100%);
+  background-color: var(--app-bg-color);
   flex-direction: column;
   justify-content: space-between;
   width: 100vw;
   min-height: 100svh;
+  transition: height 2s linear;
   display: flex;
   position: relative;
   overflow: hidden;
@@ -54,7 +59,7 @@ html, body {
   body .app {
     width: 85vw;
     min-height: 85vh;
-    margin-top: 2rem;
+    margin: 2rem;
   }
 }
 /*# sourceMappingURL=index.ba4103f4.css.map */

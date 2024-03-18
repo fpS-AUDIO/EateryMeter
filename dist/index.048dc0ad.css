@@ -6,9 +6,9 @@
   border-bottom: var(--border-width) solid var(--border-color);
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
+  background-color: var(--sidebar-bg-color);
   box-shadow: var(--shadow-colors);
-  transition: width var(--transition-time) ease;
-  background-color: #cbe9c8cc;
+  transition: width var(--transition-time) linear;
   width: 2rem;
   height: auto;
   position: fixed;
@@ -24,7 +24,6 @@
 @supports ((-webkit-backdrop-filter: blur(10px))) or (backdrop-filter: blur(10px)) {
   .sidebar {
     backdrop-filter: blur(10px);
-    background: linear-gradient(135deg, #69c85c1a, #eaf3e800);
   }
 }
 
@@ -38,6 +37,10 @@
 
 .sidebar.sidebar--expanded .feature--link {
   display: inline-block;
+}
+
+.sidebar.sidebar--expanded .__feature--container {
+  justify-content: start;
 }
 
 .sidebar .sidebar-button--container {
@@ -100,10 +103,6 @@
   justify-content: center;
   align-items: center;
   display: flex;
-}
-
-.__feature--container.expanded {
-  justify-content: start;
 }
 
 .sidebar .feature--link {

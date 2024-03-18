@@ -53,7 +53,7 @@ h1 {
   cursor: pointer;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
-  background-color: var(--sidebar-containers-bg-color);
+  background-color: var(--general-container-bg-color);
   transition: all var(--transition-time) ease;
 }
 
@@ -101,21 +101,14 @@ h1 {
 
 .hidden-top {
   transform: translateY(-20rem);
-  height: 0rem;
-  margin-bottom: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-
-.hidden-right {
-  transform: translateX(20rem);
-  width: 0rem;
-  margin-bottom: 0;
   opacity: 0;
   overflow: hidden;
   filter: blur(5px);
 }
 
-.displayOff {
-  display: none;
+.hidden-right {
+  transform: translateX(20rem);
+  opacity: 0;
+  overflow: hidden;
+  filter: blur(5px);
 }

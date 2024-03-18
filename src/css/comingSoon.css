@@ -7,9 +7,15 @@
   overflow: hidden;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
-  background-color: var(--sidebar-containers-bg-color);
+  background-color: var(--general-container-bg-color-2);
   transition: all var(--transition-time) ease;
   margin: 1rem;
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .comingsoon--container {
+    backdrop-filter: blur(10px);
+  }
 }
 
 .comingsoon--container:hover {

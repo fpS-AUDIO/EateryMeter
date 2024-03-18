@@ -5,24 +5,8 @@ class SidebarView {
   _sidebarCheckbox = document.getElementById(`sibebar-opener`);
 
   openCloseSidebar(boolean) {
-    /**
-     * opens sidebar if recieved boolean argument is true
-     */
-    if (boolean) {
-      this._parentElement.classList.add(`sidebar--expanded`);
-      this._parentElement
-        .querySelectorAll(`.__feature--container`)
-        .forEach((el) => {
-          el.classList.add(`expanded`);
-        });
-    } else {
-      this._parentElement.classList.remove(`sidebar--expanded`);
-      this._parentElement
-        .querySelectorAll(`.__feature--container`)
-        .forEach((el) => {
-          el.classList.remove(`expanded`);
-        });
-    }
+    if (boolean) this._parentElement.classList.add(`sidebar--expanded`);
+    else this._parentElement.classList.remove(`sidebar--expanded`);
   }
 
   closeSidebar() {

@@ -8,7 +8,7 @@
   justify-content: center;
   align-items: center;
   text-wrap: balance;
-  transition: all var(--transition-time-slow) ease;
+  transition: all var(--transition-time) linear;
 }
 
 .homepage--container .img-wrapper--chef {

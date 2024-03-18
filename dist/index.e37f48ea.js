@@ -638,13 +638,18 @@ const renderCurrentView = function() {
     else // Default to homepage view
     (0, _homepageViewJsDefault.default).render();
 };
-const controlViewLinks = function(element) {
+const controlViewLinks = async function(element) {
     // update hash in url and state
     _modelJs.updateHash(element);
     // get current hash (without #)
     const currentHash = _modelJs.state.hash.slice(1);
     // update state (currentView property)
     _modelJs.updateCurrentView(currentHash);
+    // close sidebar
+    // sidebarView.closeSidebar().then(() => {
+    //   console.log(`4: start rendering`);
+    //   renderCurrentView();
+    // });
     // close sidebar
     (0, _sidebarViewJsDefault.default).closeSidebar();
     // render currentView
@@ -2500,8 +2505,10 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "DELAY_RENDER_VIEW_SEC", ()=>DELAY_RENDER_VIEW_SEC);
 parcelHelpers.export(exports, "DELAY_AUTOCLOSE_SIDEBAR_SEC", ()=>DELAY_AUTOCLOSE_SIDEBAR_SEC);
+parcelHelpers.export(exports, "CSS_TRANSITION_TIME_MS", ()=>CSS_TRANSITION_TIME_MS);
 const DELAY_RENDER_VIEW_SEC = 0.1;
-const DELAY_AUTOCLOSE_SIDEBAR_SEC = 1;
+const DELAY_AUTOCLOSE_SIDEBAR_SEC = 0.2;
+const CSS_TRANSITION_TIME_MS = 250;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -2796,7 +2803,7 @@ class BmiView extends (0, _mainViewJsDefault.default) {
             const btnCalc = e.target.closest(`.calculate--bmi`);
             if (!btnCalc) return;
             // make sure the form is still there
-            // const form = btnCalc.closest(`.bmi--form`);
+            const form = btnCalc.closest(`.bmi--form`);
             if (!form) return;
             // take the values from form and convert them into number
             const cmValue = +form.querySelector(`.form__input--cm`).value;
@@ -2821,16 +2828,31 @@ var _configJs = require("../config.js");
 class MainView {
     _mainElement = document.querySelector(`.main`);
     render() {
-        this._clearMainContainer();
-        const markupHtml = this._generateMarkupHtml();
-        this._mainElement.insertAdjacentHTML(`afterbegin`, markupHtml);
-        this._setParentElement();
-        setTimeout(()=>{
-            this._showParentElement();
-        }, _configJs.DELAY_RENDER_VIEW_SEC * 1000);
+        // await cleaning main container with animation
+        this._clearMainContainer().then(()=>{
+            // then create the new html
+            const markupHtml = this._generateMarkupHtml();
+            // insert the new html inside the main container
+            this._mainElement.insertAdjacentHTML(`afterbegin`, markupHtml);
+            // set new parent element (only for instances)
+            this._setParentElement();
+            // then remove hidden class with delay to achieve animation
+            setTimeout(()=>{
+                this._showParentElement();
+            }, _configJs.DELAY_RENDER_VIEW_SEC * 1000);
+        });
     }
     _clearMainContainer() {
-        this._mainElement.innerHTML = ``;
+        // Promisifying function (arrow function to use correct 'this' keyword)
+        return new Promise((resolve)=>{
+            // if there is a child, add .hidden-right to this child (make animation)
+            if (this._mainElement.firstElementChild) this._mainElement.firstElementChild.classList.add(`hidden-right`);
+            // after the same time of css animation time, eliminate inner html and resolve promise()
+            setTimeout(()=>{
+                this._mainElement.innerHTML = ``;
+                resolve();
+            }, _configJs.CSS_TRANSITION_TIME_MS);
+        });
     }
     _setParentElement() {
         this._parentElement = this._mainElement.firstElementChild;
@@ -2849,19 +2871,8 @@ class SidebarView {
     _parentElement = document.querySelector(`.sidebar`);
     _sidebarCheckbox = document.getElementById(`sibebar-opener`);
     openCloseSidebar(boolean) {
-        /**
-     * opens sidebar if recieved boolean argument is true
-     */ if (boolean) {
-            this._parentElement.classList.add(`sidebar--expanded`);
-            this._parentElement.querySelectorAll(`.__feature--container`).forEach((el)=>{
-                el.classList.add(`expanded`);
-            });
-        } else {
-            this._parentElement.classList.remove(`sidebar--expanded`);
-            this._parentElement.querySelectorAll(`.__feature--container`).forEach((el)=>{
-                el.classList.remove(`expanded`);
-            });
-        }
+        if (boolean) this._parentElement.classList.add(`sidebar--expanded`);
+        else this._parentElement.classList.remove(`sidebar--expanded`);
     }
     closeSidebar() {
         // exit function if sidebar is not opened
