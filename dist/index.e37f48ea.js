@@ -586,33 +586,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"aenu9":[function(require,module,exports) {
 // ----- IMPORTS ----- //
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _webImmediateJs = require("core-js/modules/web.immediate.js"); // document.getElementById('scan-btn').addEventListener('click', function() {
- //   Quagga.init({
- //       inputStream: {
- //           name: "Live",
- //           type: "LiveStream",
- //           target: document.querySelector('#interactive'),
- //           constraints: {
- //               facingMode: "environment" // Use the rear camera
- //           },
- //       },
- //       decoder: {
- //           readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "upc_reader", "upc_e_reader", "i2of5_reader"] // Add barcode formats here
- //       },
- //   }, function(err) {
- //       if (err) {
- //           console.log(err);
- //           return
- //       }
- //       console.log("Initialization finished. Ready to start");
- //       Quagga.start();
- //   });
- //   Quagga.onDetected(function(result) {
- //       var code = result.codeResult.code;
- //       document.getElementById('barcode-input').value = code;
- //       Quagga.stop(); // Stop Quagga after a barcode is detected
- //   });
- // });
+var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _runtime = require("regenerator-runtime/runtime");
 var _quagga = require("quagga");
 var _quaggaDefault = parcelHelpers.interopDefault(_quagga);
@@ -640,7 +614,6 @@ const registerRoutes = function() {
    *
    */ _modelJs.registerRoute("home", (0, _homepageViewJsDefault.default));
     _modelJs.registerRoute("bmi", (0, _bmiViewJsDefault.default));
-    // model.registerRoute("fruit", fruitInfoView);
     _modelJs.registerRoute("barcode", (0, _barcodeViewJsDefault.default));
 // ... Register other routes here when needed ...
 };
@@ -683,66 +656,40 @@ const controlBMICalculator = function(data) {
     _modelJs.calculateUpdateBMI(data);
 // console.dir(data);
 };
+const controlBarcodeScanner = function() {
+    // get new generated DOM elements
+    const domElements = (0, _barcodeViewJsDefault.default).getBarcodeDOMElements();
+    // make the barcodeInteractive element visible
+    (0, _barcodeViewJsDefault.default).showbarcodeInteractive();
+    // await getting barcode number
+    _modelJs.getBarcode(domElements).then((barcodeNum)=>{
+        // then
+        // update the UI input value with scanned barcode number
+        (0, _barcodeViewJsDefault.default).setNewBarcodeInputValue(barcodeNum);
+        // and make the barcodeInteractive element invisible
+        (0, _barcodeViewJsDefault.default).hidebarcodeInteractive();
+    });
+};
+const controlStopBarcodeScanner = function() {
+    // stop Quagga scanner
+    (0, _quaggaDefault.default).stop();
+    // and make the barcodeInteractive element invisible
+    (0, _barcodeViewJsDefault.default).hidebarcodeInteractive();
+};
 // ----- ENTRY POINT FUNCTION ----- //
 const init = function() {
     /**
    * Entry point function based on publish–subscribe pattern
-   */ // registerRoutes();
-    // renderCurrentView();
+   */ registerRoutes();
+    renderCurrentView();
     (0, _sidebarViewJsDefault.default).addHandlerManagerSibebar(controlSidebarWidth);
-// sidebarView.addHandlerManagerLinks(controlViewLinks);
-// homepageView.addHandlerButtonsLinks(controlViewLinks);
-// bmiView.addHandlerBMICalculator(controlBMICalculator);
+    (0, _sidebarViewJsDefault.default).addHandlerManagerLinks(controlViewLinks);
+    (0, _homepageViewJsDefault.default).addHandlerButtonsLinks(controlViewLinks);
+    (0, _bmiViewJsDefault.default).addHandlerBMICalculator(controlBMICalculator);
+    (0, _barcodeViewJsDefault.default).addHandlerBarcodeScanner(controlBarcodeScanner);
+    (0, _barcodeViewJsDefault.default).addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
 };
 init();
-// ----- TESTING BARCODE INPUT ----- //
-const barcodeScanBtn = document.querySelector(`.btn--scan-barcode`);
-const barcodeForm = document.querySelector(`.barcode--form`);
-const barcodeInteractive = document.querySelector(`.barcode--interactive`);
-barcodeScanBtn.addEventListener("click", function() {
-    // Explicitly make the barcodeInteractive element visible every time the scan button is clicked
-    barcodeInteractive.style.display = "block"; // Adjust this to 'inline-block' if it fits your layout better
-    // Quagga.init(config, callback)
-    (0, _quaggaDefault.default).init({
-        inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: barcodeInteractive,
-            constraints: {
-                facingMode: "environment"
-            }
-        },
-        decoder: {
-            readers: [
-                "code_128_reader",
-                "ean_reader",
-                "ean_8_reader",
-                "code_39_reader",
-                "code_39_vin_reader",
-                "codabar_reader",
-                "upc_reader",
-                "upc_e_reader",
-                "i2of5_reader"
-            ]
-        }
-    }, function(err) {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        console.log("Initialization finished. Ready to start");
-        (0, _quaggaDefault.default).start();
-    });
-    (0, _quaggaDefault.default).onDetected(function(result) {
-        const code = result.codeResult.code;
-        console.log(code);
-        // barcodeForm.value = code;
-        document.querySelector('input[name="barcode"]').value = code;
-        (0, _quaggaDefault.default).stop();
-        // Hide the barcodeInteractive element
-        barcodeInteractive.style.display = "none";
-    });
-});
 
 },{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./config.js":"k5Hzs","./model.js":"Y4A21","./views/sidebarView.js":"eUObu","./views/homepageView.js":"5HgCT","./views/bmiView.js":"hSar1","./views/fruitInfoView.js":"3vIxL","./views/barcodeView.js":"ktkUL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","quagga":"fEVYk"}],"49tUX":[function(require,module,exports) {
 "use strict";
@@ -2613,9 +2560,13 @@ parcelHelpers.export(exports, "updateHash", ()=>updateHash);
 parcelHelpers.export(exports, "registerRoute", ()=>registerRoute);
 parcelHelpers.export(exports, "updateCurrentView", ()=>updateCurrentView);
 parcelHelpers.export(exports, "calculateUpdateBMI", ()=>calculateUpdateBMI);
+parcelHelpers.export(exports, "getBarcode", ()=>getBarcode);
+parcelHelpers.export(exports, "getProduct", ()=>getProduct);
 var _configJs = require("./config.js");
 var _bmiViewJs = require("./views/bmiView.js");
 var _bmiViewJsDefault = parcelHelpers.interopDefault(_bmiViewJs);
+var _quagga = require("quagga");
+var _quaggaDefault = parcelHelpers.interopDefault(_quagga);
 const state = {
     currentView: null,
     routes: {},
@@ -2713,7 +2664,46 @@ const calculateUpdateBMI = function(data) {
     // update UI: bmiView
     (0, _bmiViewJsDefault.default).renderResultBMI(state.bmi.currentLevel);
 };
+const getBarcode = function(domElements) {
+    // promisifying function to make it wait until the code is read
+    return new Promise((resolve, reject)=>{
+        // redeclare the variables for easier readability
+        const barcodeInteractive = domElements.barcodeInteractive;
+        // Quagga.init(options, callback)
+        (0, _quaggaDefault.default).init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: barcodeInteractive,
+                constraints: {
+                    facingMode: "environment"
+                }
+            },
+            decoder: {
+                readers: [
+                    "ean_reader",
+                    "upc_reader"
+                ]
+            }
+        }, function(err) {
+            if (err) {
+                console.log(err);
+                reject(err); // Reject the promise if there's an initialization error
+                return;
+            }
+            (0, _quaggaDefault.default).start();
+        });
+        (0, _quaggaDefault.default).onDetected(function(result) {
+            // get the actual codebar value
+            const code = result.codeResult.code;
+            (0, _quaggaDefault.default).stop();
+            // Resolve the promise with the detected code
+            resolve(code);
+        });
+    });
+};
 const getProduct = async function(barcode) {
+    // https://world.openfoodfacts.org/api/v2/product/[barcode].json
     try {
         const response = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`);
         if (!response.ok) throw new Error(`Something went wrong: ${response.status}`);
@@ -2722,44 +2712,19 @@ const getProduct = async function(barcode) {
     } catch (err) {
         console.log(err);
     }
-}; // getProduct(3033710038381);
- // getProduct(8018801003863);
- // getProduct(8000121310370);
- // getProduct(80298373);
- // getProduct(8076809525237);
+}; // getProduct(8076809525237);
  /**
- * https://www.nescafe.com/it/coffees/classic?gad=1&gclid=CjwKCAjwg4SpBhAKEiwAdyLwvCVTEqeyXSOuA5jQBcABOd5zI42mo5UavTvOJs6PI8hC9F7JrO4KsRoCl5kQAvD_BwE&gclsrc=aw.ds
+ * The willReadFrequently attribute is a hint you can provide to the browser 
+ * that you intend to perform these kinds of operations often. 
+ * This allows the browser to optimize how it handles the canvas, 
+ * potentially improving performance by keeping the data in a format
+ * that's faster to access or by making other optimizations behind the scenes.
+ * 
+ *  const canvas = document.getElementById('myCanvas');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+ */ 
 
- * https://world.openfoodfacts.org/api/v2/product/[barcode].json
- */  // const getInfoProduct = async function (barcodeString) {
- //   try {
- //     const response = await fetch(`
- //     https://world.openfoodfacts.net/api/v2/product/${barcodeString}`);
- //     if (!response.ok)
- //       throw new Error(`Something went wrong: ${response.status}`);
- //     const dataProduct = await await response.json();
- //     console.log(dataProduct);
- //   } catch (err) {
- //     console.log(err);
- //   }
- // };
- // const getInfoIngredient = async function (ingredient) {
- //   try {
- //     const response = await fetch(`
- //     https://world.openfoodfacts.org/cgi/search.pl?search_terms=${ingredient}`);
- //     if (!response.ok)
- //       throw new Error(`Something went wrong: ${response.status}`);
- //     const dataProduct = await await response.json();
- //     console.log(dataProduct);
- //   } catch (err) {
- //     console.log(err);
- //   }
- // };
- // getInfoProduct(`3017620422003`);
- // getInfoProduct(`80000532`);
- // getInfoProduct(`020357122682`);
-
-},{"./config.js":"k5Hzs","./views/bmiView.js":"hSar1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hSar1":[function(require,module,exports) {
+},{"./config.js":"k5Hzs","./views/bmiView.js":"hSar1","quagga":"fEVYk","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hSar1":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _mainViewJs = require("./MainView.js");
@@ -2773,7 +2738,7 @@ class BmiView extends (0, _mainViewJsDefault.default) {
         return `
     <div class="bmi-view hidden-right">
         <div class="form--container">
-          <form class="bmi--form bmi--contaner">
+          <form class="bmi--form bmi--container">
             <h2>Body Mass Index Adults</h2>
             <div class="form__row">
               <label class="form__label">Height</label>
@@ -2785,7 +2750,7 @@ class BmiView extends (0, _mainViewJsDefault.default) {
             </div>
             <button class="btn calculate--bmi">Calculate</button>
         </form>
-            <div class="bmi--contaner bmi-container-result">
+            <div class="bmi--container bmi-container-result">
               <h2>Welcome to the BMI Calculator</h2>
               <h3 class="bmi--result--sentence">Your results will be displayed here.</h3>
             </div>
@@ -2947,187 +2912,7 @@ class MainView {
 }
 exports.default = MainView;
 
-},{"../config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"eUObu":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _configJs = require("../config.js");
-class SidebarView {
-    _parentElement = document.querySelector(`.sidebar`);
-    _sidebarCheckbox = document.getElementById(`sibebar-opener`);
-    openCloseSidebar(boolean) {
-        if (boolean) this._parentElement.classList.add(`sidebar--expanded`);
-        else this._parentElement.classList.remove(`sidebar--expanded`);
-    }
-    closeSidebar() {
-        // exit function if sidebar is not opened
-        if (!this._parentElement.classList.contains(`sidebar--expanded`)) return;
-        // remove checkbox
-        this._parentElement.querySelector(`.sidebar--checkbox`).checked = false;
-        // and actually close sidebar after given seconds
-        setTimeout(()=>{
-            this._parentElement.classList.remove(`sidebar--expanded`);
-        }, _configJs.DELAY_AUTOCLOSE_SIDEBAR_SEC * 1000);
-    }
-    addHandlerManagerSibebar(subscribeFunc) {
-        // listening on changes of ckeckbox
-        this._sidebarCheckbox.addEventListener(`change`, (e)=>{
-            // passing boolean (checked or not) as argument
-            subscribeFunc(e.target.checked);
-        });
-    }
-    addHandlerManagerLinks(subscribeFunc) {
-        this._parentElement.addEventListener(`click`, (e)=>{
-            const itemClicked = e.target.closest(`.__features--item`);
-            if (!itemClicked) return;
-            const anchorCliked = itemClicked.querySelector(`.feature--link`);
-            subscribeFunc(anchorCliked);
-        });
-    }
-}
-exports.default = new SidebarView();
-
-},{"../config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5HgCT":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _mainViewJs = require("./MainView.js");
-var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
-var _chefSvg = require("../../img/chef.svg");
-var _chefSvgDefault = parcelHelpers.interopDefault(_chefSvg);
-class HomepageView extends (0, _mainViewJsDefault.default) {
-    // _parentElement = document.querySelector(`.homepage--container`);
-    _generateMarkupHtml() {
-        return `
-    <div class="homepage--container hidden-right">
-        <div class="img-wrapper--chef noSelect">
-        <img
-            class="image up-down-animated"
-            src="${0, _chefSvgDefault.default}"
-            alt="cartoon image of a chef"
-        />
-        </div>
-        <div class="homepage-content">
-            <h1>Welcome to EateryMeter</h1>
-            <h3>Your Ultimate Guide to Nutritious Living</h3>
-            <hr />
-            <p>
-                Discover the world of health and flavor with EateryMeter, your
-                go-to app for managing a balanced diet and lifestyle. From
-                calculating your BMI to unlocking the nutritional secrets of
-                fruits and packaged products, EateryMeter offers a comprehensive
-                suite of tools for food enthusiasts. Embrace a healthier,
-                informed, and tastier journey to wellness today.
-            </p>
-            <div class="btn--container">
-                <a href="#home" class="btn btn--hashlink noSelect" role="button">Home</a>
-                <a href="#bmi" class="btn btn--hashlink noSelect" role="button">Calc BMI</a>
-                <a href="#fruit" class="btn btn--hashlink noSelect" role="button">Fruit Info</a>
-                <a href="#barcode" class="btn btn--hashlink noSelect" role="button">Barcode</a>
-            </div>
-        </div>
-    </div>
-    `;
-    }
-    addHandlerButtonsLinks(subscribeFunc) {
-        this._mainElement.addEventListener(`click`, (e)=>{
-            const itemClicked = e.target.closest(`.btn--hashlink`);
-            if (!itemClicked) return;
-            subscribeFunc(itemClicked);
-        });
-    }
-}
-exports.default = new HomepageView();
-
-},{"./MainView.js":"8ymy6","../../img/chef.svg":"70Ss1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"70Ss1":[function(require,module,exports) {
-module.exports = require("798a32a3db0abed8").getBundleURL("hWUTQ") + "chef.32d33305.svg" + "?" + Date.now();
-
-},{"798a32a3db0abed8":"lgJ39"}],"lgJ39":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-}
-// TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}],"3vIxL":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _mainViewJs = require("./MainView.js");
-var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
-class FruitInfoView extends (0, _mainViewJsDefault.default) {
-    _generateMarkupHtml() {
-        return `
-    <article class="article comingsoon--container hidden-right">
-        <h1>\u{1F34E} Fruit Nutritional Encyclopedia - Coming Soon! \u{1F34C}</h1>
-        <hr class="comingsoon--hr" />
-        <h4>
-            Get ready to explore a world of flavors and nutrition! Our upcoming
-            feature will unlock the secrets behind every bite of your favorite
-            fruits. From avocados to zucchinis, discover fascinating data like
-            calories, sugar content, and much more. Whether you're a fitness
-            enthusiast or just looking to make healthier food choices, this
-            feature will be your ultimate guide to the nutritional value of
-            fruits. Stay tuned for an exciting journey to wellness!
-        </h4>
-    </article>
-    `;
-    }
-}
-exports.default = new FruitInfoView();
-
-},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktkUL":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _mainViewJs = require("./MainView.js");
-var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
-class BarcodeView extends (0, _mainViewJsDefault.default) {
-    _generateMarkupHtml() {
-        return `
-    <article class="article comingsoon--container hidden-right">
-        <h1>\u{1F50D} Product Barcode Nutrition Scanner - Coming Soon! \u{1F6D2}</h1>
-        <hr class="comingsoon--hr" />
-        <h4>
-            Imagine having the power to uncover the nutritional facts of
-            packaged products with just a scan! Our forthcoming feature will
-            make this a reality, allowing you to get detailed information about
-            a product by simply scanning its barcode. Perfect for those who are
-            meticulous about what goes into their grocery basket, this tool will
-            help you make informed choices effortlessly. Gear up for a smarter,
-            healthier shopping experience!
-        </h4>
-    </article>
-    `;
-    }
-}
-exports.default = new BarcodeView();
-
-},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fEVYk":[function(require,module,exports) {
+},{"../config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fEVYk":[function(require,module,exports) {
 !function(t, e) {
     module.exports = e(e.toString()).default;
 }(this, function(t) {
@@ -8773,6 +8558,258 @@ exports.default = new BarcodeView();
     ]);
 });
 
-},{}]},["hycaY","aenu9"], "aenu9", "parcelRequire8f4a")
+},{}],"eUObu":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _configJs = require("../config.js");
+class SidebarView {
+    _parentElement = document.querySelector(`.sidebar`);
+    _sidebarCheckbox = document.getElementById(`sibebar-opener`);
+    openCloseSidebar(boolean) {
+        if (boolean) this._parentElement.classList.add(`sidebar--expanded`);
+        else this._parentElement.classList.remove(`sidebar--expanded`);
+    }
+    closeSidebar() {
+        // exit function if sidebar is not opened
+        if (!this._parentElement.classList.contains(`sidebar--expanded`)) return;
+        // remove checkbox
+        this._parentElement.querySelector(`.sidebar--checkbox`).checked = false;
+        // and actually close sidebar after given seconds
+        setTimeout(()=>{
+            this._parentElement.classList.remove(`sidebar--expanded`);
+        }, _configJs.DELAY_AUTOCLOSE_SIDEBAR_SEC * 1000);
+    }
+    addHandlerManagerSibebar(subscribeFunc) {
+        // listening on changes of ckeckbox
+        this._sidebarCheckbox.addEventListener(`change`, (e)=>{
+            // passing boolean (checked or not) as argument
+            subscribeFunc(e.target.checked);
+        });
+    }
+    addHandlerManagerLinks(subscribeFunc) {
+        this._parentElement.addEventListener(`click`, (e)=>{
+            const itemClicked = e.target.closest(`.__features--item`);
+            if (!itemClicked) return;
+            const anchorCliked = itemClicked.querySelector(`.feature--link`);
+            subscribeFunc(anchorCliked);
+        });
+    }
+}
+exports.default = new SidebarView();
+
+},{"../config.js":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5HgCT":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _mainViewJs = require("./MainView.js");
+var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
+var _chefSvg = require("../../img/chef.svg");
+var _chefSvgDefault = parcelHelpers.interopDefault(_chefSvg);
+class HomepageView extends (0, _mainViewJsDefault.default) {
+    // _parentElement = document.querySelector(`.homepage--container`);
+    _generateMarkupHtml() {
+        return `
+    <div class="homepage--container hidden-right">
+        <div class="img-wrapper--chef noSelect">
+        <img
+            class="image up-down-animated"
+            src="${0, _chefSvgDefault.default}"
+            alt="cartoon image of a chef"
+        />
+        </div>
+        <div class="homepage-content">
+            <h1>Welcome to EateryMeter</h1>
+            <h3>Your Ultimate Guide to Nutritious Living</h3>
+            <hr />
+            <p>
+                Discover the world of health and flavor with EateryMeter, your
+                go-to app for managing a balanced diet and lifestyle. From
+                calculating your BMI to unlocking the nutritional secrets of
+                fruits and packaged products, EateryMeter offers a comprehensive
+                suite of tools for food enthusiasts. Embrace a healthier,
+                informed, and tastier journey to wellness today.
+            </p>
+            <div class="btn--container">
+                <a href="#home" class="btn btn--hashlink noSelect" role="button">Home</a>
+                <a href="#bmi" class="btn btn--hashlink noSelect" role="button">Calc BMI</a>
+                <a href="#fruit" class="btn btn--hashlink noSelect" role="button">Fruit Info</a>
+                <a href="#barcode" class="btn btn--hashlink noSelect" role="button">Barcode</a>
+            </div>
+        </div>
+    </div>
+    `;
+    }
+    addHandlerButtonsLinks(subscribeFunc) {
+        this._mainElement.addEventListener(`click`, (e)=>{
+            const itemClicked = e.target.closest(`.btn--hashlink`);
+            if (!itemClicked) return;
+            subscribeFunc(itemClicked);
+        });
+    }
+}
+exports.default = new HomepageView();
+
+},{"./MainView.js":"8ymy6","../../img/chef.svg":"70Ss1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"70Ss1":[function(require,module,exports) {
+module.exports = require("798a32a3db0abed8").getBundleURL("hWUTQ") + "chef.32d33305.svg" + "?" + Date.now();
+
+},{"798a32a3db0abed8":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+}
+// TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"3vIxL":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _mainViewJs = require("./MainView.js");
+var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
+class FruitInfoView extends (0, _mainViewJsDefault.default) {
+    _generateMarkupHtml() {
+        return `
+    <article class="article comingsoon--container hidden-right">
+        <h1>\u{1F34E} Fruit Nutritional Encyclopedia - Coming Soon! \u{1F34C}</h1>
+        <hr class="comingsoon--hr" />
+        <h4>
+            Get ready to explore a world of flavors and nutrition! Our upcoming
+            feature will unlock the secrets behind every bite of your favorite
+            fruits. From avocados to zucchinis, discover fascinating data like
+            calories, sugar content, and much more. Whether you're a fitness
+            enthusiast or just looking to make healthier food choices, this
+            feature will be your ultimate guide to the nutritional value of
+            fruits. Stay tuned for an exciting journey to wellness!
+        </h4>
+    </article>
+    `;
+    }
+}
+exports.default = new FruitInfoView();
+
+},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktkUL":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _configJs = require("../config.js");
+var _mainViewJs = require("./MainView.js");
+var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
+class BarcodeView extends (0, _mainViewJsDefault.default) {
+    _generateMarkupHtml() {
+        return `
+      <div class="barcode--view hidden-right">
+      <div class="viewport barcode--interactive hidden-top"></div>
+      <form class="barcode--form container">
+        <div class="form__row">
+          <label for="barcode--input" class="form__label">Barcode</label>
+          <input
+            class="form__input"
+            type="text"
+            name="barcode--input"
+            placeholder="number"
+          />
+        </div>
+        <div class="barcode--buttons">
+          <button class="btn btn--scan-barcode" type="button">
+            Start Scan
+          </button>
+          <button class="btn btn--close-barcode" type="button">
+            Stop Scan
+          </button>
+          <button class="btn btn--check-barcode" type="button">
+            Check
+          </button>
+        </div>
+      </form>
+      <article class="article comingsoon--container ">
+          <h1>\u{1F50D} Product Barcode Nutrition Scanner - Coming Soon! \u{1F6D2}</h1>
+          <hr class="comingsoon--hr" />
+          <h4>
+            Imagine having the power to uncover the nutritional facts of
+            packaged products with just a scan! Our forthcoming feature will
+            make this a reality, allowing you to get detailed information about
+            a product by simply scanning its barcode. Perfect for those who are
+            meticulous about what goes into their grocery basket, this tool will
+            help you make informed choices effortlessly. Gear up for a smarter,
+            healthier shopping experience!
+          </h4>
+        </article>
+      </div>
+    `;
+    }
+    showbarcodeInteractive() {
+        // make the barcodeInteractive element visible
+        this.barcodeInteractive.style.display = "block";
+        this.barcodeInteractive.classList.remove(`hidden-top`);
+    }
+    hidebarcodeInteractive() {
+        // Hide the barcodeInteractive element
+        this.barcodeInteractive.classList.add(`hidden-top`);
+        setTimeout(()=>{
+            // also make it
+            this.barcodeInteractive.style.display = "none";
+        }, _configJs.CSS_TRANSITION_TIME_MS);
+    }
+    setNewBarcodeInputValue(newValue) {
+        this.barcodeInput.value = newValue;
+    }
+    getBarcodeDOMElements() {
+        // selecting elements
+        this.barcodeScanBtn = this._mainElement.querySelector(`.btn--scan-barcode`);
+        this.barcodeInput = this._mainElement.querySelector('input[name="barcode--input"]');
+        this.barcodeInteractive = this._mainElement.querySelector(`.barcode--interactive`);
+        // returning new DOM elements to controller
+        return {
+            barcodeInput: this.barcodeInput,
+            barcodeInteractive: this.barcodeInteractive
+        };
+    }
+    addHandlerBarcodeScanner(subscriberFunc) {
+        // add evenet listener to "scan" button
+        this._mainElement.addEventListener(`click`, (e)=>{
+            const btnScan = e.target.closest(`.btn--scan-barcode`);
+            // check if there is any button
+            if (!btnScan) return;
+            // activate controlBarcodeScanner
+            subscriberFunc();
+        });
+    }
+    addHandlerStopBarcodeScanner(subscriberFunc) {
+        // check if stop scanning button was clicked
+        this._mainElement.addEventListener(`click`, (e)=>{
+            const stopBtn = e.target.closest(`.btn--close-barcode`);
+            if (!stopBtn) return;
+            // if it was clicked make controller close scanner
+            subscriberFunc();
+        });
+    }
+}
+exports.default = new BarcodeView();
+
+},{"../config.js":"k5Hzs","./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["hycaY","aenu9"], "aenu9", "parcelRequire8f4a")
 
 //# sourceMappingURL=index.e37f48ea.js.map

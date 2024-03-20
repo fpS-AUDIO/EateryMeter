@@ -11,7 +11,7 @@ class BmiView extends MainView {
     return `
     <div class="bmi-view hidden-right">
         <div class="form--container">
-          <form class="bmi--form bmi--contaner">
+          <form class="bmi--form bmi--container">
             <h2>Body Mass Index Adults</h2>
             <div class="form__row">
               <label class="form__label">Height</label>
@@ -23,7 +23,7 @@ class BmiView extends MainView {
             </div>
             <button class="btn calculate--bmi">Calculate</button>
         </form>
-            <div class="bmi--contaner bmi-container-result">
+            <div class="bmi--container bmi-container-result">
               <h2>Welcome to the BMI Calculator</h2>
               <h3 class="bmi--result--sentence">Your results will be displayed here.</h3>
             </div>

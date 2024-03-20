@@ -15,7 +15,7 @@
   }
 }
 
-.bmi-view .bmi--contaner {
+.bmi-view .bmi--container {
   text-align: start;
   text-wrap: balance;
   border-radius: var(--border-radius);
@@ -32,12 +32,12 @@
 }
 
 @supports ((-webkit-backdrop-filter: blur(10px))) or (backdrop-filter: blur(10px)) {
-  .bmi-view .bmi--contaner {
+  .bmi-view .bmi--container {
     backdrop-filter: blur(10px);
   }
 }
 
-.bmi-view .bmi--contaner:hover {
+.bmi-view .bmi--container:hover {
   box-shadow: var(--shadow-colors-hover);
 }
 
@@ -54,31 +54,6 @@
 .bmi-view h1 {
   color: var(--text-primary);
   font-size: 4rem;
-}
-
-.bmi-view .form__row {
-  grid-template-columns: 1fr 1fr;
-  grid-auto-flow: row;
-  display: grid;
-}
-
-.bmi-view .form__label {
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.bmi-view .form__input {
-  border: none;
-  border-bottom: var(--border-width) solid var(--text-h1-color);
-  transition: all var(--transition-time) ease;
-  background-color: #ffffff80;
-  width: 100%;
-  padding-left: 1rem;
-  font-size: 1.5rem;
-}
-
-.bmi-view .form__input:focus {
-  outline: none;
 }
 
 .bmi-view .btn {

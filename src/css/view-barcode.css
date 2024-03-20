@@ -1,0 +1,44 @@
+.barcode--view {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  transition: all var(--transition-time) ease;
+}
+.barcode--view .drawingBuffer {
+  display: none;
+}
+
+.barcode--view .container {
+  max-width: 30rem;
+  margin-bottom: 1rem;
+  background-color: var(--general-container-bg-color-2);
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .barcode--view .container {
+    backdrop-filter: blur(10px);
+  }
+}
+
+.barcode--view .form__row {
+  margin-bottom: 1rem;
+}
+
+.barcode--view .barcode--buttons {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.5rem;
+}
+
+.barcode--view .barcode--interactive {
+  overflow: hidden;
+  max-width: min(30rem, 96%);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-time) ease;
+}
+
+.barcode--view .barcode--interactive video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

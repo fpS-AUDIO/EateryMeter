@@ -19,6 +19,9 @@
   box-shadow: var(--shadow-colors);
   transition: width var(--transition-time) linear;
 }
+.sidebar .container {
+  cursor: pointer;
+}
 
 @media (min-width: 600px) {
   .sidebar {

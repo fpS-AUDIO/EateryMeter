@@ -21,6 +21,8 @@ h1 {
   outline: none !important;
 }
 
+/* ----- ICONS AND IMAGES ----- */
+
 .image {
   max-width: 100%;
   max-height: 100%;
@@ -47,10 +49,11 @@ h1 {
     brightness(120%);
 }
 
+/* ----- CONTAINERS ----- */
+
 .container {
   padding: 0.5rem;
   overflow: hidden;
-  cursor: pointer;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
   background-color: var(--general-container-bg-color);
@@ -60,6 +63,8 @@ h1 {
 .container:hover {
   box-shadow: var(--shadow-colors-hover);
 }
+
+/* ----- BUTTONS ----- */
 
 .btn {
   width: 6rem;
@@ -99,8 +104,43 @@ h1 {
   box-shadow: var(--shadow-colors-hover);
 }
 
+/* ----- FORMS ----- */
+
+.form__row {
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: 1fr 1fr;
+}
+
+.form__label {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.form__input {
+  width: 100%;
+  padding-left: 1rem;
+  font-size: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  border-bottom: var(--border-width) solid var(--text-h1-color);
+  transition: all var(--transition-time) ease;
+}
+.form__input:focus {
+  outline: none;
+}
+
+/* ----- HIDDEN CLASSES ----- */
+
 .hidden-top {
   transform: translateY(-20rem);
+  opacity: 0;
+  overflow: hidden;
+  filter: blur(5px);
+}
+
+.hidden-bottom {
+  transform: translateY(20rem);
   opacity: 0;
   overflow: hidden;
   filter: blur(5px);

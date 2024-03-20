@@ -15,6 +15,10 @@
   overflow: hidden;
 }
 
+.sidebar .container {
+  cursor: pointer;
+}
+
 @media (width >= 600px) {
   .sidebar {
     width: 4rem;

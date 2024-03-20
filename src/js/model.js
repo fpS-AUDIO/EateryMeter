@@ -1,5 +1,6 @@
 import * as cfg from "./config.js";
 import bmiView from "./views/bmiView.js";
+import Quagga from "quagga";
 
 export const state = {
   currentView: null,
@@ -116,7 +117,59 @@ export const calculateUpdateBMI = function (data) {
   bmiView.renderResultBMI(state.bmi.currentLevel);
 };
 
-const getProduct = async function (barcode) {
+export const getBarcode = function (domElements) {
+  // promisifying function to make it wait until the code is read
+  return new Promise((resolve, reject) => {
+    // redeclare the variables for easier readability
+    const barcodeInteractive = domElements.barcodeInteractive;
+
+    // Quagga.init(options, callback)
+    Quagga.init(
+      {
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: barcodeInteractive,
+          constraints: {
+            facingMode: "environment",
+          },
+        },
+        decoder: {
+          readers: [
+            "ean_reader", // For EAN-13
+            "upc_reader", // For UPC-A
+            // "code_128_reader",
+            // "ean_8_reader",
+            // "code_39_reader",
+            // "code_39_vin_reader",
+            // "codabar_reader",
+            // "upc_e_reader",
+            // "i2of5_reader",
+          ],
+        },
+      },
+      function (err) {
+        if (err) {
+          console.log(err);
+          reject(err); // Reject the promise if there's an initialization error
+          return;
+        }
+        Quagga.start();
+      }
+    );
+
+    Quagga.onDetected(function (result) {
+      // get the actual codebar value
+      const code = result.codeResult.code;
+      Quagga.stop();
+      // Resolve the promise with the detected code
+      resolve(code);
+    });
+  });
+};
+
+export const getProduct = async function (barcode) {
+  // https://world.openfoodfacts.org/api/v2/product/[barcode].json
   try {
     const response = await fetch(
       `https://world.openfoodfacts.org/api/v2/product/${barcode}.json`
@@ -130,45 +183,15 @@ const getProduct = async function (barcode) {
     console.log(err);
   }
 };
-
-// getProduct(3033710038381);
-// getProduct(8018801003863);
-// getProduct(8000121310370);
-// getProduct(80298373);
 // getProduct(8076809525237);
 
-
 /**
- * https://www.nescafe.com/it/coffees/classic?gad=1&gclid=CjwKCAjwg4SpBhAKEiwAdyLwvCVTEqeyXSOuA5jQBcABOd5zI42mo5UavTvOJs6PI8hC9F7JrO4KsRoCl5kQAvD_BwE&gclsrc=aw.ds
-
- * https://world.openfoodfacts.org/api/v2/product/[barcode].json
+ * The willReadFrequently attribute is a hint you can provide to the browser 
+ * that you intend to perform these kinds of operations often. 
+ * This allows the browser to optimize how it handles the canvas, 
+ * potentially improving performance by keeping the data in a format
+ * that's faster to access or by making other optimizations behind the scenes.
+ * 
+ *  const canvas = document.getElementById('myCanvas');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
  */
-
-// const getInfoProduct = async function (barcodeString) {
-//   try {
-//     const response = await fetch(`
-//     https://world.openfoodfacts.net/api/v2/product/${barcodeString}`);
-//     if (!response.ok)
-//       throw new Error(`Something went wrong: ${response.status}`);
-//     const dataProduct = await await response.json();
-//     console.log(dataProduct);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
-// const getInfoIngredient = async function (ingredient) {
-//   try {
-//     const response = await fetch(`
-//     https://world.openfoodfacts.org/cgi/search.pl?search_terms=${ingredient}`);
-//     if (!response.ok)
-//       throw new Error(`Something went wrong: ${response.status}`);
-//     const dataProduct = await await response.json();
-//     console.log(dataProduct);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
-
-// getInfoProduct(`3017620422003`);
-// getInfoProduct(`80000532`);
-// getInfoProduct(`020357122682`);
