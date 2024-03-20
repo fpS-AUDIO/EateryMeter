@@ -2,6 +2,9 @@
 
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+
+import Quagga from "quagga";
+
 import * as cfg from "./config.js";
 import * as model from "./model.js";
 import sidebarView from "./views/sidebarView.js";
@@ -25,7 +28,7 @@ const registerRoutes = function () {
    */
   model.registerRoute("home", homepageView);
   model.registerRoute("bmi", bmiView);
-  model.registerRoute("fruit", fruitInfoView);
+  // model.registerRoute("fruit", fruitInfoView);
   model.registerRoute("barcode", barcodeView);
   // ... Register other routes here when needed ...
 };
@@ -90,23 +93,96 @@ const init = function () {
   /**
    * Entry point function based on publish–subscribe pattern
    */
-  registerRoutes();
-  renderCurrentView();
+  // registerRoutes();
+  // renderCurrentView();
   sidebarView.addHandlerManagerSibebar(controlSidebarWidth);
-  sidebarView.addHandlerManagerLinks(controlViewLinks);
-  homepageView.addHandlerButtonsLinks(controlViewLinks);
-  bmiView.addHandlerBMICalculator(controlBMICalculator);
+  // sidebarView.addHandlerManagerLinks(controlViewLinks);
+  // homepageView.addHandlerButtonsLinks(controlViewLinks);
+  // bmiView.addHandlerBMICalculator(controlBMICalculator);
 };
 init();
 
-/* ----- TODO: 
- V  add github link icon    
- V  create home page
- V  implmenet BMI View
- V  implement MVC architecture
- -  add functionality to BMI
- -  implmenet fruityvice Card View 
- -  add functionality to fruityvice
- -  create update method based on virtual DOM
- ...
-*/
+// ----- TESTING BARCODE INPUT ----- //
+
+const barcodeScanBtn = document.querySelector(`.btn--scan-barcode`);
+const barcodeForm = document.querySelector(`.barcode--form`);
+const barcodeInteractive = document.querySelector(`.barcode--interactive`);
+
+barcodeScanBtn.addEventListener("click", function () {
+  // Explicitly make the barcodeInteractive element visible every time the scan button is clicked
+  barcodeInteractive.style.display = "block"; // Adjust this to 'inline-block' if it fits your layout better
+
+  // Quagga.init(config, callback)
+  Quagga.init(
+    {
+      inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: barcodeInteractive,
+        constraints: {
+          facingMode: "environment",
+        },
+      },
+      decoder: {
+        readers: [
+          "code_128_reader",
+          "ean_reader",
+          "ean_8_reader",
+          "code_39_reader",
+          "code_39_vin_reader",
+          "codabar_reader",
+          "upc_reader",
+          "upc_e_reader",
+          "i2of5_reader",
+        ],
+      },
+    },
+    function (err) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log("Initialization finished. Ready to start");
+      Quagga.start();
+    }
+  );
+
+  Quagga.onDetected(function (result) {
+    const code = result.codeResult.code;
+    console.log(code);
+    // barcodeForm.value = code;
+    document.querySelector('input[name="barcode"]').value = code;
+    Quagga.stop();
+    // Hide the barcodeInteractive element
+    barcodeInteractive.style.display = "none";
+  });
+});
+
+// document.getElementById('scan-btn').addEventListener('click', function() {
+//   Quagga.init({
+//       inputStream: {
+//           name: "Live",
+//           type: "LiveStream",
+//           target: document.querySelector('#interactive'),
+//           constraints: {
+//               facingMode: "environment" // Use the rear camera
+//           },
+//       },
+//       decoder: {
+//           readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "codabar_reader", "upc_reader", "upc_e_reader", "i2of5_reader"] // Add barcode formats here
+//       },
+//   }, function(err) {
+//       if (err) {
+//           console.log(err);
+//           return
+//       }
+//       console.log("Initialization finished. Ready to start");
+//       Quagga.start();
+//   });
+
+//   Quagga.onDetected(function(result) {
+//       var code = result.codeResult.code;
+//       document.getElementById('barcode-input').value = code;
+//       Quagga.stop(); // Stop Quagga after a barcode is detected
+//   });
+// });

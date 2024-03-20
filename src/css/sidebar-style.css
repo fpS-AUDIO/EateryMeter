@@ -41,11 +41,11 @@
 .sidebar.sidebar--expanded {
   width: 16rem;
 }
-.sidebar.sidebar--expanded .feature--link {
-  display: inline-block;
-}
 .sidebar.sidebar--expanded .__feature--container {
   justify-content: start;
+}
+.sidebar.sidebar--expanded .feature--link {
+  display: inline-block;
 }
 /* ------------------------------------- */
 
@@ -94,6 +94,7 @@
 .sidebar .__features--item {
   width: 80%;
   margin-bottom: 1rem;
+  white-space: nowrap; /* to hide wierd height scaling during opening animation of sidebar */
   transition: all var(--transition-time) ease;
 }
 

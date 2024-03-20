@@ -18,25 +18,24 @@
     />
     <meta property="og:url" content="https://eaterymeter.netlify.app/" />
     <meta property="og:type" content="website" />
-    <meta
+    <!-- <meta
       property="og:image"
       content="https://eaterymeter.netlify.app/img/logo-small.png"
-    />
+    /> -->
     <meta property="og:image:width" content="600" />
     <meta property="og:image:height" content="600" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@YourTwitterHandle" />
     <meta name="twitter:title" content="EateryMeter" />
     <meta
       name="twitter:description"
       content="A comprehensive nutrition and lifestyle app for food enthusiasts. Discover the nutritional and enjoyable aspects of food and drink."
     />
-    <meta
+    <!-- <meta
       name="twitter:image"
       content="https://eaterymeter.netlify.app/img/logo-small.png"
-    />
+    /> -->
 
     <!-- CDN google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -58,6 +57,7 @@
     <link rel="stylesheet" href="./src/css/footer-style.css" />
     <link rel="stylesheet" href="./src/css/view-homepage.css" />
     <link rel="stylesheet" href="./src/css/view-BMI.css" />
+    <link rel="stylesheet" href="./src/css/view-barcode.css" />
     <link rel="stylesheet" href="./src/css/comingSoon.css" />
 
     <script defer type="module" src="./src/js/controller.js"></script>
@@ -119,7 +119,7 @@
               >
             </div>
           </li>
-          <li class="container __features--item">
+          <!-- <li class="container __features--item">
             <div class="__feature--container">
               <img
                 class="icon painted"
@@ -130,7 +130,7 @@
                 >Fruit Info</a
               >
             </div>
-          </li>
+          </li> -->
           <li class="container __features--item">
             <div class="__feature--container">
               <img
@@ -282,23 +282,25 @@
           </article>
         </div> -->
 
-        <!---- MAIN => COMING SOON 1 ---->
+        <!---- MAIN => BARCODE VIEW ---->
 
-        <!-- <article class="article comingsoon--container hidden-right">
-          <h1>🍎 Fruit Nutritional Encyclopedia - Coming Soon! 🍌</h1>
-          <hr class="comingsoon--hr" />
-          <h4>
-            Get ready to explore a world of flavors and nutrition! Our upcoming
-            feature will unlock the secrets behind every bite of your favorite
-            fruits. From avocados to zucchinis, discover fascinating data like
-            calories, sugar content, and much more. Whether you're a fitness
-            enthusiast or just looking to make healthier food choices, this
-            feature will be your ultimate guide to the nutritional value of
-            fruits. Stay tuned for an exciting journey to wellness!
-          </h4>
-        </article> -->
-
-        <!---- MAIN => COMING SOON 2 ---->
+        <div class="barcode--parent--container">
+          <form class="barcode--form">
+            <input
+              type="text"
+              id="barcode-input"
+              name="barcode"
+              placeholder="Enter barcode or scan"
+            />
+            <button class="btn btn--scan-barcode" type="button">
+              Scan Barcode
+            </button>
+            <button class="btn" type="button">Check</button>
+          </form>
+          <div id="interactive" class="viewport barcode--interactive"></div>
+        </div>
+        <!--  -->
+        <!---- MAIN => COMING SOON ---->
 
         <!-- <article class="article comingsoon--container hidden-right">
           <h1>🔍 Product Barcode Nutrition Scanner - Coming Soon! 🛒</h1>

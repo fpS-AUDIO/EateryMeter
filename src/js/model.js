@@ -116,6 +116,34 @@ export const calculateUpdateBMI = function (data) {
   bmiView.renderResultBMI(state.bmi.currentLevel);
 };
 
+const getProduct = async function (barcode) {
+  try {
+    const response = await fetch(
+      `https://world.openfoodfacts.org/api/v2/product/${barcode}.json`
+    );
+    if (!response.ok)
+      throw new Error(`Something went wrong: ${response.status}`);
+
+    const data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// getProduct(3033710038381);
+// getProduct(8018801003863);
+// getProduct(8000121310370);
+// getProduct(80298373);
+// getProduct(8076809525237);
+
+
+/**
+ * https://www.nescafe.com/it/coffees/classic?gad=1&gclid=CjwKCAjwg4SpBhAKEiwAdyLwvCVTEqeyXSOuA5jQBcABOd5zI42mo5UavTvOJs6PI8hC9F7JrO4KsRoCl5kQAvD_BwE&gclsrc=aw.ds
+
+ * https://world.openfoodfacts.org/api/v2/product/[barcode].json
+ */
+
 // const getInfoProduct = async function (barcodeString) {
 //   try {
 //     const response = await fetch(`
