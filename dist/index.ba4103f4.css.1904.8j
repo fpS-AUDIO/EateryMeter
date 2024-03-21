@@ -6,7 +6,7 @@
   --app-bg-color: #fbfbfb;
   --app-bg-color-secondary: ;
   --header-height: 4rem;
-  --border-color: #92aa8366;
+  --border-color: #92aa834d;
   --border-width: .1rem;
   --border-radius: .5rem;
   --button-bg-color: #27ae60;

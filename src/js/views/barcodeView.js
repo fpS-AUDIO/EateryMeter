@@ -5,7 +5,7 @@ import MainView from "./MainView.js";
 class BarcodeView extends MainView {
   _generateMarkupHtml() {
     return `
-      <div class="barcode--view hidden-right">
+    <div class="barcode--view hidden-right">
       <div class="viewport barcode--interactive hidden-top"></div>
       <form class="barcode--form container">
         <div class="form__row">
@@ -28,21 +28,165 @@ class BarcodeView extends MainView {
             Check
           </button>
         </div>
-      </form>
-      <article class="article comingsoon--container ">
-          <h1>🔍 Product Barcode Nutrition Scanner - Coming Soon! 🛒</h1>
-          <hr class="comingsoon--hr" />
-          <h4>
-            Imagine having the power to uncover the nutritional facts of
-            packaged products with just a scan! Our forthcoming feature will
-            make this a reality, allowing you to get detailed information about
-            a product by simply scanning its barcode. Perfect for those who are
-            meticulous about what goes into their grocery basket, this tool will
-            help you make informed choices effortlessly. Gear up for a smarter,
-            healthier shopping experience!
-          </h4>
-        </article>
+      </form>      
+     </div>
+    `;
+  }
+
+  checkCardOnPageOrRemoveCard() {
+    // checks if there is any card on page
+    // in case removes it fish animation
+    // returns a promise so can be chaned
+    return new Promise((resolve, reject) => {
+      const card = this._mainElement.querySelector(`.product-card`);
+      if (!card) {
+        // If no card is found, resolve immediately since there's nothing to remove
+        resolve();
+        return;
+      }
+      // Add the class to start the animation
+      card.classList.add(`hidden-right`);
+
+      // Wait for the CSS transition to finish before removing the card and resolving the promise
+      setTimeout(() => {
+        card.remove();
+        resolve(); // Resolve the promise here
+      }, cfg.CSS_TRANSITION_TIME_MS);
+    });
+  }
+
+  renderNewCard(cardMarkap) {
+    // inserts card as last child of .barcode--view
+    // then removes the hidden class to obtain animation
+    this._mainElement
+      .querySelector(`.barcode--view`)
+      .insertAdjacentHTML(`beforeend`, cardMarkap);
+    const cardElement = this._mainElement.querySelector(`.product-card`);
+    setTimeout(() => {
+      cardElement.classList.remove(`hidden-right`);
+    }, cfg.CSS_TRANSITION_TIME_MS);
+  }
+
+  generateProductCardMarkup(product) {
+    return `
+      <div class="product-card container hidden-right">
+          <div class="product-card--main">
+            <div class="product-card--main-img">
+              <img
+                class="image"
+                src=${product.imageUrl}
+                alt="product image"
+              />
+            </div>
+            <div class="product-card--main-info">
+              <h2 class="card__title">🛒 Info</h2>
+              <ul class="card__list">
+                <li class="card__list-item">
+                  <span class="card__list-item--caption">barcode:</span>
+                  <span class="card__list-item--value">${product.barcode}</span>
+                </li>
+                <li class="card__list-item">
+                  <span class="card__list-item--caption">product:</span>
+                  <span class="card__list-item--value">${product.product}</span>
+                </li>
+                <li class="card__list-item">
+                  <span class="card__list-item--caption">category:</span>
+                  <span class="card__list-item--value">${
+                    product.category
+                  }</span>
+                </li>
+                <li class="card__list-item">
+                  <span class="card__list-item--caption">brand:</span>
+                  <span class="card__list-item--value">${product.brand}</span>
+                </li>
+                <li class="card__list-item">
+                  <span class="card__list-item--caption">country:</span>
+                  <span class="card__list-item--value">${product.country}</span>
+                </li>
+                <li class="card__list-item">
+                  <span class="card__list-item--caption">quantity:</span>
+                  <span class="card__list-item--value">${
+                    product.quantity
+                  }</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          ${this._checkAndGenerateNutrientsMarkup(product.nutrients)}
+          
+          ${this._checkAndGenerateAllergensMarkup(product.allergens)}
+
+          <h4>source: <a target="_blank" href="https://world.openfoodfacts.org/">OpenFoodFacts</a></h4>
+        </div>
+    `;
+  }
+
+  _checkAndGenerateNutrientsMarkup(nutrients) {
+    // First, filter the keys to only those whose corresponding value is not empty.
+    const filteredNutrientKeys = Object.keys(nutrients).filter(
+      (nutrientKey) => {
+        // Access each nutrient object by its key and then check the 'value' property
+        const nutrient = nutrients[nutrientKey];
+        // nutrient is "not empty" if it has a 'value' property that is not undefined
+        return nutrient.value !== undefined && nutrient.unit !== undefined;
+      }
+    );
+
+    // check if there are nutrients before create div with unordered list
+    // so get the second element (index 1) of each entry
+    // and check if its  nested `value` property is not undefined
+    return filteredNutrientKeys.length > 0
+      ? `
+      <div class="product-card--nutriments">
+        <h2 class="card__title">🔬 Nutrients (100g)</h2>
+        <ul class="card__list">
+
+          ${Object.entries(nutrients)
+            .map((nutrient) => {
+              if (nutrient[1].value === undefined) return "";
+              return this._generateNutrientsSubMarkup(nutrient[1]);
+            })
+            .join(``)}
+          
+        </ul>
       </div>
+      `
+      : ``;
+  }
+
+  _generateNutrientsSubMarkup(nutrient) {
+    // generating list element for each element of array of nutrients
+    return `
+    <li class="card__list-item">
+      <span class="card__list-item--caption">${nutrient.name}:</span>
+      <span class="card__list-item--value">${nutrient.value}</span>
+      <span class="card__list-item--unit">${nutrient.unit}</span>
+    </li>
+    `;
+  }
+
+  _checkAndGenerateAllergensMarkup(allergens) {
+    // first check if there are any allergens before create a div
+    if (!allergens) return;
+
+    return `
+    <div class="product-card--allergens">
+    <h2 class="card__title">⚠️ Allergens</h2>
+    <ul class="card__list">
+
+    ${allergens.split(",").map(this._generateAllergensSubMarkup).join(``)}
+
+    </ul>
+  </div>
+    `;
+  }
+
+  _generateAllergensSubMarkup(allergen) {
+    return `
+    <li class="card__list-item">
+      <span class="card__list-item--value">${allergen}</span>
+    </li>
     `;
   }
 
@@ -65,7 +209,7 @@ class BarcodeView extends MainView {
     this.barcodeInput.value = newValue;
   }
 
-  getBarcodeDOMElements() {
+  getBarcodeDOMElement() {
     // selecting elements
     this.barcodeScanBtn = this._mainElement.querySelector(`.btn--scan-barcode`);
     this.barcodeInput = this._mainElement.querySelector(
@@ -76,10 +220,7 @@ class BarcodeView extends MainView {
     );
 
     // returning new DOM elements to controller
-    return {
-      barcodeInput: this.barcodeInput,
-      barcodeInteractive: this.barcodeInteractive,
-    };
+    return this.barcodeInteractive;
   }
 
   addHandlerBarcodeScanner(subscriberFunc) {
@@ -101,6 +242,20 @@ class BarcodeView extends MainView {
       if (!stopBtn) return;
       // if it was clicked make controller close scanner
       subscriberFunc();
+    });
+  }
+
+  addHandlerCheckBarcode(subscriberFunc) {
+    this._mainElement.addEventListener(`click`, (e) => {
+      // get check button
+      const checkBtn = e.target.closest(`.btn--check-barcode`);
+      if (!checkBtn) return;
+      // get actual barcode value
+      const barcodeValue =
+        this._parentElement.querySelector(`.form__input`).value;
+      if (!barcodeValue) return;
+      // send barcode value to controller
+      subscriberFunc(barcodeValue);
     });
   }
 }

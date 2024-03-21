@@ -5,6 +5,10 @@ import Quagga from "quagga";
 export const state = {
   currentView: null,
   routes: {},
+  barcodeProduct: {
+    barcode: null,
+    product: {},
+  },
   bmi: {
     currentBMI: null,
     currentLevel: null,
@@ -83,7 +87,7 @@ const updateCurrentBMILevel = function () {
 // ----- EXPORT FUNCTIONS ----- //
 
 export const updateHash = function (element) {
-  // updates state: change hash (also in URL)
+  // updates state: change hash (and also in URL)
   state.hash = element.hash;
   window.location.hash = state.hash;
 };
@@ -117,11 +121,11 @@ export const calculateUpdateBMI = function (data) {
   bmiView.renderResultBMI(state.bmi.currentLevel);
 };
 
-export const getBarcode = function (domElements) {
+export const getBarcode = function (domElement) {
   // promisifying function to make it wait until the code is read
   return new Promise((resolve, reject) => {
     // redeclare the variables for easier readability
-    const barcodeInteractive = domElements.barcodeInteractive;
+    const barcodeInteractive = domElement;
 
     // Quagga.init(options, callback)
     Quagga.init(
@@ -131,22 +135,40 @@ export const getBarcode = function (domElements) {
           type: "LiveStream",
           target: barcodeInteractive,
           constraints: {
-            facingMode: "environment",
+            facingMode: "environment", // Use the rear-facing camera
+            width: { ideal: 1920 }, // Suggests an ideal capture width
+            height: { ideal: 1080 }, // Suggests an ideal capture height
+            aspectRatio: { ideal: 1.777777778 }, // Optional:  specifically request a 16:9 aspect ratio
+            focusMode: "continuous", // Request continuous autofocus
           },
+        },
+        locator: {
+          // patchSize: Determines the size of the patches Quagga analyzes for detecting barcodes.
+          // Options are "x-small", "small", "medium", "large", "x-large".
+          // Smaller sizes can increase performance but may reduce detection accuracy,
+          // while larger sizes may improve accuracy but reduce performance.
+          // "medium" is a balanced choice for both speed and accuracy.
+          patchSize: "medium",
+
+          // halfSample: Controls whether Quagga should operate in half-sample mode.
+          // When set to true, the image is scaled down to half its size before processing.
+          // This can significantly improve performance with a potential trade-off in detection accuracy,
+          // especially useful for high-resolution inputs or devices with powerful cameras.
+          halfSample: true,
         },
         decoder: {
           readers: [
-            "ean_reader", // For EAN-13
-            "upc_reader", // For UPC-A
-            // "code_128_reader",
-            // "ean_8_reader",
-            // "code_39_reader",
-            // "code_39_vin_reader",
-            // "codabar_reader",
-            // "upc_e_reader",
-            // "i2of5_reader",
+            {
+              format: "ean_reader",
+              config: {
+                supplements: ["ean_2_reader"],
+              },
+            },
+            "ean_8_reader", // For EAN-8 codes
+            "ean_reader", // For EAN-13 codes
           ],
         },
+        locate: true, // Enables locator and visual feedback in the UI
       },
       function (err) {
         if (err) {
@@ -169,21 +191,83 @@ export const getBarcode = function (domElements) {
 };
 
 export const getProduct = async function (barcode) {
-  // https://world.openfoodfacts.org/api/v2/product/[barcode].json
   try {
-    const response = await fetch(
-      `https://world.openfoodfacts.org/api/v2/product/${barcode}.json`
-    );
+    // update state
+    state.barcodeProduct.barcode = +barcode;
+
+    // fetching API
+    const response = await fetch(`${cfg.OPENFOOD_FACT_API_URL}${barcode}.json`);
     if (!response.ok)
       throw new Error(`Something went wrong: ${response.status}`);
 
+    // if response is positive convert from json
     const data = await response.json();
-    console.log(data);
+
+    // update state
+    state.barcodeProduct.product = {
+      barcode: data?.code,
+      imageUrl: data?.product?.image_front_small_url,
+      product: data?.product?.product_name,
+      category: data?.product?.categories,
+      brand: data?.product?.brands,
+      country: data?.product?.countries,
+      quantity: data?.product?.quantity,
+      allergens: data?.product?.allergens_from_ingredients,
+      nutrients: {
+        energy: {
+          name: `energy`,
+          value: data.product.nutriments.energy_100g,
+          unit: data.product.nutriments.energy_unit,
+        },
+        carbohydrates: {
+          name: `carbohydrates`,
+          value: data?.product?.nutriments?.carbohydrates_100g,
+          unit: data?.product?.nutriments?.carbohydrates_unit,
+        },
+        sugar: {
+          name: `sugar`,
+          value: data?.product?.nutriments?.sugars_100g,
+          unit: data?.product?.nutriments?.sugars_unit,
+        },
+        fat: {
+          name: `fat`,
+          value: data?.product?.nutriments?.fat_100g,
+          unit: data?.product?.nutriments?.fat_unit,
+        },
+        saturatedFat: {
+          name: `saturated fat`,
+          value: data?.product?.nutriments?.["saturated - fat_100g"],
+          unit: data?.product?.nutriments?.["saturated - fat_unit"],
+        },
+        proteins: {
+          name: `proteins`,
+          value: data?.product?.nutriments?.proteins_100g,
+          unit: data?.product?.nutriments?.proteins_unit,
+        },
+        fiber: {
+          name: `fiber`,
+          value: data?.product?.nutriments?.fiber_100g,
+          unit: data?.product?.nutriments?.fiber_unit,
+        },
+        sodium: {
+          name: `sodium`,
+          value: data?.product?.nutriments?.sodium_100g,
+          unit: data?.product?.nutriments?.sodium_unit,
+        },
+        salt: {
+          name: `salt`,
+          value: data?.product?.nutriments?.salt_100g,
+          unit: data?.product?.nutriments?.salt_unit,
+        },
+      },
+    };
+
+    // return actual product to controller
+    return state.barcodeProduct.product;
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
-// getProduct(8076809525237);
 
 /**
  * The willReadFrequently attribute is a hint you can provide to the browser 
@@ -195,3 +279,13 @@ export const getProduct = async function (barcode) {
  *  const canvas = document.getElementById('myCanvas');
     const context = canvas.getContext('2d', { willReadFrequently: true });
  */
+
+// "code_128_reader",
+// "ean_8_reader",
+// "ean_reader", // For EAN-13
+// "upc_reader", // For UPC-A
+// "code_39_reader",
+// "code_39_vin_reader",
+// "codabar_reader",
+// "upc_e_reader",
+// "i2of5_reader",

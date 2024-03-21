@@ -87,13 +87,13 @@ const controlBMICalculator = function (data) {
 
 const controlBarcodeScanner = function () {
   // get new generated DOM elements
-  const domElements = barcodeView.getBarcodeDOMElements();
+  const barcodeInteractiveElement = barcodeView.getBarcodeDOMElement();
 
   // make the barcodeInteractive element visible
   barcodeView.showbarcodeInteractive();
 
   // await getting barcode number
-  model.getBarcode(domElements).then((barcodeNum) => {
+  model.getBarcode(barcodeInteractiveElement).then((barcodeNum) => {
     // then
     // update the UI input value with scanned barcode number
     barcodeView.setNewBarcodeInputValue(barcodeNum);
@@ -110,6 +110,22 @@ const controlStopBarcodeScanner = function () {
   barcodeView.hidebarcodeInteractive();
 };
 
+const controlGetProductFromBarcode = async function (barcodeValue) {
+  try {
+    // getProduct(8076809525237);
+    const product = await model.getProduct(barcodeValue);
+
+    const cardMarkap = barcodeView.generateProductCardMarkup(product);
+
+    barcodeView.checkCardOnPageOrRemoveCard().then(()=>{
+      barcodeView.renderNewCard(cardMarkap);
+    })
+    
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // ----- ENTRY POINT FUNCTION ----- //
 
 const init = function () {
@@ -124,5 +140,6 @@ const init = function () {
   bmiView.addHandlerBMICalculator(controlBMICalculator);
   barcodeView.addHandlerBarcodeScanner(controlBarcodeScanner);
   barcodeView.addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
+  barcodeView.addHandlerCheckBarcode(controlGetProductFromBarcode);
 };
 init();

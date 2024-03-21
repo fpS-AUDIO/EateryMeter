@@ -602,9 +602,7 @@ var _fruitInfoViewJs = require("./views/fruitInfoView.js");
 var _fruitInfoViewJsDefault = parcelHelpers.interopDefault(_fruitInfoViewJs);
 var _barcodeViewJs = require("./views/barcodeView.js");
 var _barcodeViewJsDefault = parcelHelpers.interopDefault(_barcodeViewJs);
-// if (module.hot) {
-//   module.hot.accept();
-// }
+if (module.hot) module.hot.accept();
 // ----- CONTROLLER FUNCTIONS ----- //
 const registerRoutes = function() {
     /**
@@ -658,11 +656,11 @@ const controlBMICalculator = function(data) {
 };
 const controlBarcodeScanner = function() {
     // get new generated DOM elements
-    const barcodeInteractiveElement = (0, _barcodeViewJsDefault.default).getBarcodeDOMElement();
+    const domElements = (0, _barcodeViewJsDefault.default).getBarcodeDOMElements();
     // make the barcodeInteractive element visible
     (0, _barcodeViewJsDefault.default).showbarcodeInteractive();
     // await getting barcode number
-    _modelJs.getBarcode(barcodeInteractiveElement).then((barcodeNum)=>{
+    _modelJs.getBarcode(domElements).then((barcodeNum)=>{
         // then
         // update the UI input value with scanned barcode number
         (0, _barcodeViewJsDefault.default).setNewBarcodeInputValue(barcodeNum);
@@ -676,31 +674,18 @@ const controlStopBarcodeScanner = function() {
     // and make the barcodeInteractive element invisible
     (0, _barcodeViewJsDefault.default).hidebarcodeInteractive();
 };
-const controlGetProductFromBarcode = async function(barcodeValue) {
-    try {
-        // getProduct(8076809525237);
-        const product = await _modelJs.getProduct(barcodeValue);
-        const cardMarkap = (0, _barcodeViewJsDefault.default).generateProductCardMarkup(product);
-        (0, _barcodeViewJsDefault.default).checkCardOnPageOrRemoveCard().then(()=>{
-            (0, _barcodeViewJsDefault.default).renderNewCard(cardMarkap);
-        });
-    } catch (err) {
-        console.log(err);
-    }
-};
 // ----- ENTRY POINT FUNCTION ----- //
 const init = function() {
     /**
    * Entry point function based on publish–subscribe pattern
-   */ registerRoutes();
-    renderCurrentView();
+   */ // registerRoutes();
+    // renderCurrentView();
     (0, _sidebarViewJsDefault.default).addHandlerManagerSibebar(controlSidebarWidth);
-    (0, _sidebarViewJsDefault.default).addHandlerManagerLinks(controlViewLinks);
-    (0, _homepageViewJsDefault.default).addHandlerButtonsLinks(controlViewLinks);
-    (0, _bmiViewJsDefault.default).addHandlerBMICalculator(controlBMICalculator);
-    (0, _barcodeViewJsDefault.default).addHandlerBarcodeScanner(controlBarcodeScanner);
-    (0, _barcodeViewJsDefault.default).addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
-    (0, _barcodeViewJsDefault.default).addHandlerCheckBarcode(controlGetProductFromBarcode);
+// sidebarView.addHandlerManagerLinks(controlViewLinks);
+// homepageView.addHandlerButtonsLinks(controlViewLinks);
+// bmiView.addHandlerBMICalculator(controlBMICalculator);
+// barcodeView.addHandlerBarcodeScanner(controlBarcodeScanner);
+// barcodeView.addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
 };
 init();
 
@@ -8177,11 +8162,9 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "DELAY_RENDER_VIEW_SEC", ()=>DELAY_RENDER_VIEW_SEC);
 parcelHelpers.export(exports, "DELAY_AUTOCLOSE_SIDEBAR_SEC", ()=>DELAY_AUTOCLOSE_SIDEBAR_SEC);
 parcelHelpers.export(exports, "CSS_TRANSITION_TIME_MS", ()=>CSS_TRANSITION_TIME_MS);
-parcelHelpers.export(exports, "OPENFOOD_FACT_API_URL", ()=>OPENFOOD_FACT_API_URL);
 const DELAY_RENDER_VIEW_SEC = 0.1;
-const DELAY_AUTOCLOSE_SIDEBAR_SEC = 0.1;
+const DELAY_AUTOCLOSE_SIDEBAR_SEC = 0.2;
 const CSS_TRANSITION_TIME_MS = 250;
-const OPENFOOD_FACT_API_URL = `https://world.openfoodfacts.org/api/v2/product/`;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -8231,10 +8214,6 @@ var _quaggaDefault = parcelHelpers.interopDefault(_quagga);
 const state = {
     currentView: null,
     routes: {},
-    barcodeProduct: {
-        barcode: null,
-        product: {}
-    },
     bmi: {
         currentBMI: null,
         currentLevel: null,
@@ -8304,7 +8283,7 @@ const updateCurrentBMILevel = function() {
     state.bmi.currentLevel.bmiValue = state.bmi.currentBMI;
 };
 const updateHash = function(element) {
-    // updates state: change hash (and also in URL)
+    // updates state: change hash (also in URL)
     state.hash = element.hash;
     window.location.hash = state.hash;
 };
@@ -8329,11 +8308,11 @@ const calculateUpdateBMI = function(data) {
     // update UI: bmiView
     (0, _bmiViewJsDefault.default).renderResultBMI(state.bmi.currentLevel);
 };
-const getBarcode = function(domElement) {
+const getBarcode = function(domElements) {
     // promisifying function to make it wait until the code is read
     return new Promise((resolve, reject)=>{
         // redeclare the variables for easier readability
-        const barcodeInteractive = domElement;
+        const barcodeInteractive = domElements.barcodeInteractive;
         // Quagga.init(options, callback)
         (0, _quaggaDefault.default).init({
             inputStream: {
@@ -8400,78 +8379,17 @@ const getBarcode = function(domElement) {
     });
 };
 const getProduct = async function(barcode) {
+    // https://world.openfoodfacts.org/api/v2/product/[barcode].json
     try {
-        // update state
-        state.barcodeProduct.barcode = +barcode;
-        // fetching API
-        const response = await fetch(`${_configJs.OPENFOOD_FACT_API_URL}${barcode}.json`);
+        const response = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`);
         if (!response.ok) throw new Error(`Something went wrong: ${response.status}`);
-        // if response is positive convert from json
         const data = await response.json();
-        // update state
-        state.barcodeProduct.product = {
-            barcode: data?.code,
-            imageUrl: data?.product?.image_front_small_url,
-            product: data?.product?.product_name,
-            category: data?.product?.categories,
-            brand: data?.product?.brands,
-            country: data?.product?.countries,
-            quantity: data?.product?.quantity,
-            allergens: data?.product?.allergens_from_ingredients,
-            nutrients: {
-                energy: {
-                    name: `energy`,
-                    value: data.product.nutriments.energy_100g,
-                    unit: data.product.nutriments.energy_unit
-                },
-                carbohydrates: {
-                    name: `carbohydrates`,
-                    value: data?.product?.nutriments?.carbohydrates_100g,
-                    unit: data?.product?.nutriments?.carbohydrates_unit
-                },
-                sugar: {
-                    name: `sugar`,
-                    value: data?.product?.nutriments?.sugars_100g,
-                    unit: data?.product?.nutriments?.sugars_unit
-                },
-                fat: {
-                    name: `fat`,
-                    value: data?.product?.nutriments?.fat_100g,
-                    unit: data?.product?.nutriments?.fat_unit
-                },
-                saturatedFat: {
-                    name: `saturated fat`,
-                    value: data?.product?.nutriments?.["saturated - fat_100g"],
-                    unit: data?.product?.nutriments?.["saturated - fat_unit"]
-                },
-                proteins: {
-                    name: `proteins`,
-                    value: data?.product?.nutriments?.proteins_100g,
-                    unit: data?.product?.nutriments?.proteins_unit
-                },
-                fiber: {
-                    name: `fiber`,
-                    value: data?.product?.nutriments?.fiber_100g,
-                    unit: data?.product?.nutriments?.fiber_unit
-                },
-                sodium: {
-                    name: `sodium`,
-                    value: data?.product?.nutriments?.sodium_100g,
-                    unit: data?.product?.nutriments?.sodium_unit
-                },
-                salt: {
-                    name: `salt`,
-                    value: data?.product?.nutriments?.salt_100g,
-                    unit: data?.product?.nutriments?.salt_unit
-                }
-            }
-        };
-        // return actual product to controller
-        return state.barcodeProduct.product;
+        console.log(data);
     } catch (err) {
-        throw err;
+        console.log(err);
     }
-}; /**
+}; // getProduct(8076809525237);
+ /**
  * The willReadFrequently attribute is a hint you can provide to the browser 
  * that you intend to perform these kinds of operations often. 
  * This allows the browser to optimize how it handles the canvas, 
@@ -8841,7 +8759,7 @@ var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
 class BarcodeView extends (0, _mainViewJsDefault.default) {
     _generateMarkupHtml() {
         return `
-    <div class="barcode--view hidden-right">
+      <div class="barcode--view hidden-right">
       <div class="viewport barcode--interactive hidden-top"></div>
       <form class="barcode--form container">
         <div class="form__row">
@@ -8864,143 +8782,21 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
             Check
           </button>
         </div>
-      </form>      
-     </div>
-    `;
-    }
-    checkCardOnPageOrRemoveCard() {
-        // checks if there is any card on page
-        // in case removes it fish animation
-        // returns a promise so can be chaned
-        return new Promise((resolve, reject)=>{
-            const card = this._mainElement.querySelector(`.product-card`);
-            if (!card) {
-                // If no card is found, resolve immediately since there's nothing to remove
-                resolve();
-                return;
-            }
-            // Add the class to start the animation
-            card.classList.add(`hidden-right`);
-            // Wait for the CSS transition to finish before removing the card and resolving the promise
-            setTimeout(()=>{
-                card.remove();
-                resolve(); // Resolve the promise here
-            }, _configJs.CSS_TRANSITION_TIME_MS);
-        });
-    }
-    renderNewCard(cardMarkap) {
-        // inserts card as last child of .barcode--view
-        // then removes the hidden class to obtain animation
-        this._mainElement.querySelector(`.barcode--view`).insertAdjacentHTML(`beforeend`, cardMarkap);
-        const cardElement = this._mainElement.querySelector(`.product-card`);
-        setTimeout(()=>{
-            cardElement.classList.remove(`hidden-right`);
-        }, _configJs.CSS_TRANSITION_TIME_MS);
-    }
-    generateProductCardMarkup(product) {
-        return `
-      <div class="product-card container hidden-right">
-          <div class="product-card--main">
-            <div class="product-card--main-img">
-              <img
-                class="image"
-                src=${product.imageUrl}
-                alt="product image"
-              />
-            </div>
-            <div class="product-card--main-info">
-              <h2 class="card__title">\u{1F6D2} Info</h2>
-              <ul class="card__list">
-                <li class="card__list-item">
-                  <span class="card__list-item--caption">barcode:</span>
-                  <span class="card__list-item--value">${product.barcode}</span>
-                </li>
-                <li class="card__list-item">
-                  <span class="card__list-item--caption">product:</span>
-                  <span class="card__list-item--value">${product.product}</span>
-                </li>
-                <li class="card__list-item">
-                  <span class="card__list-item--caption">category:</span>
-                  <span class="card__list-item--value">${product.category}</span>
-                </li>
-                <li class="card__list-item">
-                  <span class="card__list-item--caption">brand:</span>
-                  <span class="card__list-item--value">${product.brand}</span>
-                </li>
-                <li class="card__list-item">
-                  <span class="card__list-item--caption">country:</span>
-                  <span class="card__list-item--value">${product.country}</span>
-                </li>
-                <li class="card__list-item">
-                  <span class="card__list-item--caption">quantity:</span>
-                  <span class="card__list-item--value">${product.quantity}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          ${this._checkAndGenerateNutrientsMarkup(product.nutrients)}
-          
-          ${this._checkAndGenerateAllergensMarkup(product.allergens)}
-
-          <h4>source: <a target="_blank" href="https://world.openfoodfacts.org/">OpenFoodFacts</a></h4>
-        </div>
-    `;
-    }
-    _checkAndGenerateNutrientsMarkup(nutrients) {
-        // First, filter the keys to only those whose corresponding value is not empty.
-        const filteredNutrientKeys = Object.keys(nutrients).filter((nutrientKey)=>{
-            // Access each nutrient object by its key and then check the 'value' property
-            const nutrient = nutrients[nutrientKey];
-            // nutrient is "not empty" if it has a 'value' property that is not undefined
-            return nutrient.value !== undefined && nutrient.unit !== undefined;
-        });
-        // check if there are nutrients before create div with unordered list
-        // so get the second element (index 1) of each entry
-        // and check if its  nested `value` property is not undefined
-        return filteredNutrientKeys.length > 0 ? `
-      <div class="product-card--nutriments">
-        <h2 class="card__title">\u{1F52C} Nutrients (100g)</h2>
-        <ul class="card__list">
-
-          ${Object.entries(nutrients).map((nutrient)=>{
-            if (nutrient[1].value === undefined) return "";
-            return this._generateNutrientsSubMarkup(nutrient[1]);
-        }).join(``)}
-          
-        </ul>
+      </form>
+      <article class="article comingsoon--container ">
+          <h1>\u{1F50D} Product Barcode Nutrition Scanner - Coming Soon! \u{1F6D2}</h1>
+          <hr class="comingsoon--hr" />
+          <h4>
+            Imagine having the power to uncover the nutritional facts of
+            packaged products with just a scan! Our forthcoming feature will
+            make this a reality, allowing you to get detailed information about
+            a product by simply scanning its barcode. Perfect for those who are
+            meticulous about what goes into their grocery basket, this tool will
+            help you make informed choices effortlessly. Gear up for a smarter,
+            healthier shopping experience!
+          </h4>
+        </article>
       </div>
-      ` : ``;
-    }
-    _generateNutrientsSubMarkup(nutrient) {
-        // generating list element for each element of array of nutrients
-        return `
-    <li class="card__list-item">
-      <span class="card__list-item--caption">${nutrient.name}:</span>
-      <span class="card__list-item--value">${nutrient.value}</span>
-      <span class="card__list-item--unit">${nutrient.unit}</span>
-    </li>
-    `;
-    }
-    _checkAndGenerateAllergensMarkup(allergens) {
-        // first check if there are any allergens before create a div
-        if (!allergens) return;
-        return `
-    <div class="product-card--allergens">
-    <h2 class="card__title">\u{26A0}\u{FE0F} Allergens</h2>
-    <ul class="card__list">
-
-    ${allergens.split(",").map(this._generateAllergensSubMarkup).join(``)}
-
-    </ul>
-  </div>
-    `;
-    }
-    _generateAllergensSubMarkup(allergen) {
-        return `
-    <li class="card__list-item">
-      <span class="card__list-item--value">${allergen}</span>
-    </li>
     `;
     }
     showbarcodeInteractive() {
@@ -9019,13 +8815,16 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
     setNewBarcodeInputValue(newValue) {
         this.barcodeInput.value = newValue;
     }
-    getBarcodeDOMElement() {
+    getBarcodeDOMElements() {
         // selecting elements
         this.barcodeScanBtn = this._mainElement.querySelector(`.btn--scan-barcode`);
         this.barcodeInput = this._mainElement.querySelector('input[name="barcode--input"]');
         this.barcodeInteractive = this._mainElement.querySelector(`.barcode--interactive`);
         // returning new DOM elements to controller
-        return this.barcodeInteractive;
+        return {
+            barcodeInput: this.barcodeInput,
+            barcodeInteractive: this.barcodeInteractive
+        };
     }
     addHandlerBarcodeScanner(subscriberFunc) {
         // add evenet listener to "scan" button
@@ -9044,18 +8843,6 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
             if (!stopBtn) return;
             // if it was clicked make controller close scanner
             subscriberFunc();
-        });
-    }
-    addHandlerCheckBarcode(subscriberFunc) {
-        this._mainElement.addEventListener(`click`, (e)=>{
-            // get check button
-            const checkBtn = e.target.closest(`.btn--check-barcode`);
-            if (!checkBtn) return;
-            // get actual barcode value
-            const barcodeValue = this._parentElement.querySelector(`.form__input`).value;
-            if (!barcodeValue) return;
-            // send barcode value to controller
-            subscriberFunc(barcodeValue);
         });
     }
 }
