@@ -155,6 +155,15 @@ class BarcodeView extends MainView {
       : ``;
   }
 
+  generateErrorMarkup(error) {
+    return `
+    <div class="product-card container card-error-container hidden-right">
+      <h2 class="card__title">😕 Product not found</h2>
+      <p class="card__list-item--caption">${error.message}</p>
+    </div>
+    `;
+  }
+
   _generateNutrientsSubMarkup(nutrient) {
     // generating list element for each element of array of nutrients
     return `
@@ -168,7 +177,7 @@ class BarcodeView extends MainView {
 
   _checkAndGenerateAllergensMarkup(allergens) {
     // first check if there are any allergens before create a div
-    if (!allergens) return;
+    if (!allergens) return ``;
 
     return `
     <div class="product-card--allergens">
@@ -254,7 +263,8 @@ class BarcodeView extends MainView {
       const barcodeValue =
         this._parentElement.querySelector(`.form__input`).value;
       if (!barcodeValue) return;
-      // send barcode value to controller
+      // empty the input field and send barcode value to controller
+      this._parentElement.querySelector(`.form__input`).value = ``;
       subscriberFunc(barcodeValue);
     });
   }

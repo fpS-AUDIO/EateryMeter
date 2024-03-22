@@ -112,17 +112,25 @@ const controlStopBarcodeScanner = function () {
 
 const controlGetProductFromBarcode = async function (barcodeValue) {
   try {
-    // getProduct(8076809525237);
+    // get the product form API usin the barcode
     const product = await model.getProduct(barcodeValue);
 
+    // create the HTML markup dinamically from product
     const cardMarkap = barcodeView.generateProductCardMarkup(product);
 
-    barcodeView.checkCardOnPageOrRemoveCard().then(()=>{
+    // remove possible existing card on page (check + animation)
+    barcodeView.checkCardOnPageOrRemoveCard().then(() => {
+      // then render the newly created card
       barcodeView.renderNewCard(cardMarkap);
-    })
-    
+    });
   } catch (err) {
-    console.log(err);
+    // genere error markup html
+    const errorMarkup = barcodeView.generateErrorMarkup(err);
+    // remove possible existing card on page (check + animation)
+    barcodeView.checkCardOnPageOrRemoveCard().then(() => {
+      // then render the newly created card
+      barcodeView.renderNewCard(errorMarkup);
+    });
   }
 };
 

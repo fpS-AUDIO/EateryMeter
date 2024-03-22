@@ -198,7 +198,7 @@ export const getProduct = async function (barcode) {
     // fetching API
     const response = await fetch(`${cfg.OPENFOOD_FACT_API_URL}${barcode}.json`);
     if (!response.ok)
-      throw new Error(`Something went wrong: ${response.status}`);
+      throw new Error(`Somethig went wrong: ${response.status}`);
 
     // if response is positive convert from json
     const data = await response.json();
@@ -265,6 +265,7 @@ export const getProduct = async function (barcode) {
     // return actual product to controller
     return state.barcodeProduct.product;
   } catch (err) {
+    console.log(err);
     throw err;
   }
 };

@@ -678,14 +678,23 @@ const controlStopBarcodeScanner = function() {
 };
 const controlGetProductFromBarcode = async function(barcodeValue) {
     try {
-        // getProduct(8076809525237);
+        // get the product form API usin the barcode
         const product = await _modelJs.getProduct(barcodeValue);
+        // create the HTML markup dinamically from product
         const cardMarkap = (0, _barcodeViewJsDefault.default).generateProductCardMarkup(product);
+        // remove possible existing card on page (check + animation)
         (0, _barcodeViewJsDefault.default).checkCardOnPageOrRemoveCard().then(()=>{
+            // then render the newly created card
             (0, _barcodeViewJsDefault.default).renderNewCard(cardMarkap);
         });
     } catch (err) {
-        console.log(err);
+        // genere error markup html
+        const errorMarkup = (0, _barcodeViewJsDefault.default).generateErrorMarkup(err);
+        // remove possible existing card on page (check + animation)
+        (0, _barcodeViewJsDefault.default).checkCardOnPageOrRemoveCard().then(()=>{
+            // then render the newly created card
+            (0, _barcodeViewJsDefault.default).renderNewCard(errorMarkup);
+        });
     }
 };
 // ----- ENTRY POINT FUNCTION ----- //
@@ -8405,7 +8414,7 @@ const getProduct = async function(barcode) {
         state.barcodeProduct.barcode = +barcode;
         // fetching API
         const response = await fetch(`${_configJs.OPENFOOD_FACT_API_URL}${barcode}.json`);
-        if (!response.ok) throw new Error(`Something went wrong: ${response.status}`);
+        if (!response.ok) throw new Error(`Somethig went wrong: ${response.status}`);
         // if response is positive convert from json
         const data = await response.json();
         // update state
@@ -8469,6 +8478,7 @@ const getProduct = async function(barcode) {
         // return actual product to controller
         return state.barcodeProduct.product;
     } catch (err) {
+        console.log(err);
         throw err;
     }
 }; /**
@@ -8972,6 +8982,14 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
       </div>
       ` : ``;
     }
+    generateErrorMarkup(error) {
+        return `
+    <div class="product-card container card-error-container hidden-right">
+      <h2 class="card__title">\u{1F615} Product not found</h2>
+      <p class="card__list-item--caption">${error.message}</p>
+    </div>
+    `;
+    }
     _generateNutrientsSubMarkup(nutrient) {
         // generating list element for each element of array of nutrients
         return `
@@ -8984,7 +9002,7 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
     }
     _checkAndGenerateAllergensMarkup(allergens) {
         // first check if there are any allergens before create a div
-        if (!allergens) return;
+        if (!allergens) return ``;
         return `
     <div class="product-card--allergens">
     <h2 class="card__title">\u{26A0}\u{FE0F} Allergens</h2>
@@ -9054,7 +9072,8 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
             // get actual barcode value
             const barcodeValue = this._parentElement.querySelector(`.form__input`).value;
             if (!barcodeValue) return;
-            // send barcode value to controller
+            // empty the input field and send barcode value to controller
+            this._parentElement.querySelector(`.form__input`).value = ``;
             subscriberFunc(barcodeValue);
         });
     }
