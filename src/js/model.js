@@ -206,7 +206,7 @@ export const getProduct = async function (barcode) {
     // update state
     state.barcodeProduct.product = {
       barcode: data?.code,
-      imageUrl: data?.product?.image_front_small_url,
+      imageUrl: data?.product?.image_url,
       product: data?.product?.product_name,
       category: data?.product?.categories,
       brand: data?.product?.brands,
@@ -260,6 +260,7 @@ export const getProduct = async function (barcode) {
           unit: data?.product?.nutriments?.salt_unit,
         },
       },
+      ingredients: data?.product?.ingredients,
     };
 
     // return actual product to controller

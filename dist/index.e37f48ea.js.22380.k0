@@ -699,11 +699,11 @@ const controlGetProductFromBarcode = async function(barcodeValue) {
 };
 // ----- ENTRY POINT FUNCTION ----- //
 const init = function() {
-/**
+    /**
    * Entry point function based on publish–subscribe pattern
    */ // registerRoutes();
-// renderCurrentView();
-// sidebarView.addHandlerManagerSibebar(controlSidebarWidth);
+    // renderCurrentView();
+    (0, _sidebarViewJsDefault.default).addHandlerManagerSibebar(controlSidebarWidth);
 // sidebarView.addHandlerManagerLinks(controlViewLinks);
 // homepageView.addHandlerButtonsLinks(controlViewLinks);
 // bmiView.addHandlerBMICalculator(controlBMICalculator);
@@ -8417,10 +8417,12 @@ const getProduct = async function(barcode) {
         if (!response.ok) throw new Error(`Somethig went wrong: ${response.status}`);
         // if response is positive convert from json
         const data = await response.json();
+        // ≈
+        console.log(data);
         // update state
         state.barcodeProduct.product = {
             barcode: data?.code,
-            imageUrl: data?.product?.image_url,
+            imageUrl: data?.product?.image_front_small_url,
             product: data?.product?.product_name,
             category: data?.product?.categories,
             brand: data?.product?.brands,
@@ -8473,8 +8475,7 @@ const getProduct = async function(barcode) {
                     value: data?.product?.nutriments?.salt_100g,
                     unit: data?.product?.nutriments?.salt_unit
                 }
-            },
-            ingredients: data?.product?.ingredients
+            }
         };
         // return actual product to controller
         return state.barcodeProduct.product;
@@ -8919,7 +8920,7 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
                 alt="product image"
               />
             </div>
-            <div class="product-card--main-info grid-close">
+            <div class="product-card--main-info">
               <h2 class="card__title">\u{1F6D2} Info</h2>
               <ul class="card__list">
                 <li class="card__list-item">
@@ -8950,37 +8951,12 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
             </div>
           </div>
 
-          
           ${this._checkAndGenerateNutrientsMarkup(product.nutrients)}
           
-          ${this._checkAndGenerateIngredientsMarkup(product.ingredients)}
-
           ${this._checkAndGenerateAllergensMarkup(product.allergens)}
 
           <h4>source: <a target="_blank" href="https://world.openfoodfacts.org/">OpenFoodFacts</a></h4>
         </div>
-    `;
-    }
-    _checkAndGenerateIngredientsMarkup(ingredients) {
-        // if array of ingredients is not empty create div container
-        // else return empty string
-        return ingredients.length > 0 ? `
-        <div class="product-card--ingredients grid-far">
-        <h2 class="card__title">\u{1F966} Ingredients</h2>
-        <ul class="card__list">
-
-        ${ingredients.map(this._generateIngredientSubMarkup).join(``)}
-
-        </ul>
-      </div>
-    ` : ``;
-    }
-    _generateIngredientSubMarkup(ingredient) {
-        return `
-    <li class="card__list-item">
-    <span class="card__list-item--caption caption-ingredient">${ingredient.text}</span>
-    <span class="card__list-item--value">\u{2248} ${ingredient.percent_estimate.toFixed(2)}%</span>
-  </li>
     `;
     }
     _checkAndGenerateNutrientsMarkup(nutrients) {
@@ -8995,7 +8971,7 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
         // so get the second element (index 1) of each entry
         // and check if its  nested `value` property is not undefined
         return filteredNutrientKeys.length > 0 ? `
-      <div class="product-card--nutriments grid-far">
+      <div class="product-card--nutriments">
         <h2 class="card__title">\u{1F52C} Nutrients (100g)</h2>
         <ul class="card__list">
 
@@ -9031,7 +9007,7 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
         return `
     <div class="product-card--allergens">
     <h2 class="card__title">\u{26A0}\u{FE0F} Allergens</h2>
-    <ul class="card__list-list">
+    <ul class="card__list">
 
     ${allergens.split(",").map(this._generateAllergensSubMarkup).join(``)}
 
@@ -9041,7 +9017,9 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
     }
     _generateAllergensSubMarkup(allergen) {
         return `
-    <li>${allergen}</li>
+    <li class="card__list-item">
+      <span class="card__list-item--value">${allergen}</span>
+    </li>
     `;
     }
     showbarcodeInteractive() {

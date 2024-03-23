@@ -78,7 +78,7 @@ class BarcodeView extends MainView {
                 alt="product image"
               />
             </div>
-            <div class="product-card--main-info">
+            <div class="product-card--main-info grid-close">
               <h2 class="card__title">🛒 Info</h2>
               <ul class="card__list">
                 <li class="card__list-item">
@@ -113,12 +113,45 @@ class BarcodeView extends MainView {
             </div>
           </div>
 
+          
           ${this._checkAndGenerateNutrientsMarkup(product.nutrients)}
           
+          ${this._checkAndGenerateIngredientsMarkup(product.ingredients)}
+
           ${this._checkAndGenerateAllergensMarkup(product.allergens)}
 
           <h4>source: <a target="_blank" href="https://world.openfoodfacts.org/">OpenFoodFacts</a></h4>
         </div>
+    `;
+  }
+
+  _checkAndGenerateIngredientsMarkup(ingredients) {
+    // if array of ingredients is not empty create div container
+    // else return empty string
+    return ingredients.length > 0
+      ? `
+        <div class="product-card--ingredients grid-far">
+        <h2 class="card__title">🥦 Ingredients</h2>
+        <ul class="card__list">
+
+        ${ingredients.map(this._generateIngredientSubMarkup).join(``)}
+
+        </ul>
+      </div>
+    `
+      : ``;
+  }
+
+  _generateIngredientSubMarkup(ingredient) {
+    return `
+    <li class="card__list-item">
+    <span class="card__list-item--caption caption-ingredient">${
+      ingredient.text
+    }</span>
+    <span class="card__list-item--value">≈ ${ingredient.percent_estimate.toFixed(
+      2
+    )}%</span>
+  </li>
     `;
   }
 
@@ -138,7 +171,7 @@ class BarcodeView extends MainView {
     // and check if its  nested `value` property is not undefined
     return filteredNutrientKeys.length > 0
       ? `
-      <div class="product-card--nutriments">
+      <div class="product-card--nutriments grid-far">
         <h2 class="card__title">🔬 Nutrients (100g)</h2>
         <ul class="card__list">
 
@@ -169,8 +202,7 @@ class BarcodeView extends MainView {
     return `
     <li class="card__list-item">
       <span class="card__list-item--caption">${nutrient.name}:</span>
-      <span class="card__list-item--value">${nutrient.value}</span>
-      <span class="card__list-item--unit">${nutrient.unit}</span>
+      <span class="card__list-item--value">${nutrient.value}${nutrient.unit}</span>
     </li>
     `;
   }
@@ -182,7 +214,7 @@ class BarcodeView extends MainView {
     return `
     <div class="product-card--allergens">
     <h2 class="card__title">⚠️ Allergens</h2>
-    <ul class="card__list">
+    <ul class="card__list-list">
 
     ${allergens.split(",").map(this._generateAllergensSubMarkup).join(``)}
 
@@ -193,9 +225,7 @@ class BarcodeView extends MainView {
 
   _generateAllergensSubMarkup(allergen) {
     return `
-    <li class="card__list-item">
-      <span class="card__list-item--value">${allergen}</span>
-    </li>
+    <li>${allergen}</li>
     `;
   }
 

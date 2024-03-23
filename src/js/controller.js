@@ -140,14 +140,14 @@ const init = function () {
   /**
    * Entry point function based on publish–subscribe pattern
    */
-  registerRoutes();
-  renderCurrentView();
-  sidebarView.addHandlerManagerSibebar(controlSidebarWidth);
-  sidebarView.addHandlerManagerLinks(controlViewLinks);
-  homepageView.addHandlerButtonsLinks(controlViewLinks);
-  bmiView.addHandlerBMICalculator(controlBMICalculator);
-  barcodeView.addHandlerBarcodeScanner(controlBarcodeScanner);
-  barcodeView.addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
-  barcodeView.addHandlerCheckBarcode(controlGetProductFromBarcode);
+  // registerRoutes();
+  // renderCurrentView();
+  // sidebarView.addHandlerManagerSibebar(controlSidebarWidth);
+  // sidebarView.addHandlerManagerLinks(controlViewLinks);
+  // homepageView.addHandlerButtonsLinks(controlViewLinks);
+  // bmiView.addHandlerBMICalculator(controlBMICalculator);
+  // barcodeView.addHandlerBarcodeScanner(controlBarcodeScanner);
+  // barcodeView.addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
+  // barcodeView.addHandlerCheckBarcode(controlGetProductFromBarcode);
 };
 init();

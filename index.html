@@ -190,35 +190,58 @@
           </div>
         </div> -->
 
-        <!---- MAIN => BMI VIEW ---->
+        <!---- MAIN => BMI VIEW hidden-right ---->
 
-        <!-- <div class="bmi-view hidden-right">
+        <div class="bmi-view">
           <div class="form--container">
             <form class="bmi--form bmi--container">
               <h2>Body Mass Index Adults</h2>
               <div class="form__row">
+                <input type="radio" id="male" name="gender" value="male" />
+                <label class="form__label" for="male">male</label>
+                <input type="radio" id="female" name="gender" value="female" />
+                <label class="form__label" for="female">female</label>
+              </div>
+              <div class="form__row">
                 <label class="form__label">Height</label>
-                <input type="number" class="form__input form__input--cm" placeholder="cm" />
+                <input
+                  type="number"
+                  class="form__input form__input--cm"
+                  placeholder="cm"
+                />
               </div>
               <div class="form__row">
                 <label class="form__label">Weight</label>
-                <input type="number" class="form__input form__input--kg" placeholder="kg" />
+                <input
+                  type="number"
+                  class="form__input form__input--kg"
+                  placeholder="kg"
+                />
+              </div>
+              <div class="form__row">
+                <label class="form__label">Age</label>
+                <input
+                  type="number"
+                  class="form__input form__input--years"
+                  placeholder="years"
+                />
               </div>
               <button class="btn calculate--bmi">Calculate</button>
             </form>
 
             <div class="bmi--container bmi-container-result">
-
               WELCOME MESSAGE:
               <h2>Welcome to the BMI Calculator</h2>
-              <h3 class="bmi--result--sentence">Your results will be displayed here.</h3>
+              <h3 class="bmi--result--sentence">
+                Your results will be displayed here.
+              </h3>
 
               RESULT:
               <h2>Your Body Mass Index is</h2>
               <h1 class="bmi--result--number">24.9</h1>
               <h3 class="bmi--result--sentence">Normal weight</h3>
 
-              ERROR: 
+              ERROR:
               <h2>⚠️Please Enter the Correct Value...</h2>
             </div>
           </div>
@@ -280,7 +303,7 @@
               </li>
             </ul>
           </article>
-        </div> -->
+        </div>
 
         <!---- MAIN => BARCODE VIEW ---->
 
@@ -311,8 +334,8 @@
             [insert here the PRODUCT-CARD as last child]
         </div>  -->
 
-        <!-- PRODUCT-CARD
-        <div class="product-card container hidden-right">
+        <!-- PRODUCT-CARD hidden-right -->
+        <!-- <div class="product-card container hidden-right">
           <div class="product-card--main">
             <div class="product-card--main-img">
               <img
@@ -321,7 +344,7 @@
                 alt="product image"
               />
             </div>
-            <div class="product-card--main-info">
+            <div class="product-card--main-info grid-close">
               <h2 class="card__title">🛒 Info</h2>
               <ul class="card__list">
                 <li class="card__list-item">
@@ -332,37 +355,56 @@
                   <span class="card__list-item--caption">product:</span>
                   <span class="card__list-item--value">coffee</span>
                 </li>
+                <li class="card__list-item">
+                  <span class="card__list-item--caption">quantity:</span>
+                  <span class="card__list-item--value">400g</span>
+                </li>
               </ul>
             </div>
           </div>
-          <div class="product-card--nutriments">
+          <div class="product-card--nutriments grid-far">
             <h2 class="card__title">🔬 Nutrients (100g)</h2>
             <ul class="card__list">
               <li class="card__list-item">
                 <span class="card__list-item--caption">energy:</span>
-                <span class="card__list-item--value">1283</span>
-                <span class="card__list-item--unit">kcal</span>
+                <span class="card__list-item--value">1283kcal</span>
               </li>
               <li class="card__list-item">
-                <span class="card__list-item--caption">saturated-fat:</span>
-                <span class="card__list-item--value">103</span>
-                <span class="card__list-item--unit">g</span>
+                <span class="card__list-item--caption">carbohydrates:</span>
+                <span class="card__list-item--value">103g</span>
+              </li>
+            </ul>
+          </div>
+          <div class="product-card--ingredients grid-far">
+            <h2 class="card__title">🥦 Ingredients</h2>
+            <ul class="card__list">
+              <li class="card__list-item">
+                <span class="card__list-item--caption caption-ingredient"
+                  >Ingredient1:</span
+                >
+                <span class="card__list-item--value">≈ 13%</span>
+              </li>
+              <li class="card__list-item">
+                <span class="card__list-item--caption caption-ingredient"
+                  >Ingredient2:</span
+                >
+                <span class="card__list-item--value">≈ 23%</span>
               </li>
             </ul>
           </div>
           <div class="product-card--allergens">
             <h2 class="card__title">⚠️ Allergens</h2>
-            <ul class="card__list">
-              <li class="card__list-item">
-                <span class="card__list-item--value">allergen 01</span>
-              </li>
-              <li class="card__list-item">
-                <span class="card__list-item--value">allergen 02</span>
-              </li>
+            <ul class="card__list-list">
+              <li>allergen 01</li>
+              <li>allergen 02</li>
             </ul>
           </div>
-
-          <h4>source: <a target="_blank" href="https://world.openfoodfacts.org/">OpenFoodFacts</a></h4>
+          <h4>
+            source:
+            <a target="_blank" href="https://world.openfoodfacts.org/"
+              >OpenFoodFacts</a
+            >
+          </h4>
         </div> -->
 
         <!--     PRODUCT-ERROR
