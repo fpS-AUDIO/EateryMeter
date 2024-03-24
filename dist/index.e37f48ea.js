@@ -596,10 +596,8 @@ var _sidebarViewJs = require("./views/sidebarView.js");
 var _sidebarViewJsDefault = parcelHelpers.interopDefault(_sidebarViewJs);
 var _homepageViewJs = require("./views/homepageView.js");
 var _homepageViewJsDefault = parcelHelpers.interopDefault(_homepageViewJs);
-var _bmiViewJs = require("./views/bmiView.js");
-var _bmiViewJsDefault = parcelHelpers.interopDefault(_bmiViewJs);
-var _fruitInfoViewJs = require("./views/fruitInfoView.js");
-var _fruitInfoViewJsDefault = parcelHelpers.interopDefault(_fruitInfoViewJs);
+var _calculatorViewJs = require("./views/calculatorView.js");
+var _calculatorViewJsDefault = parcelHelpers.interopDefault(_calculatorViewJs);
 var _barcodeViewJs = require("./views/barcodeView.js");
 var _barcodeViewJsDefault = parcelHelpers.interopDefault(_barcodeViewJs);
 // if (module.hot) {
@@ -613,7 +611,7 @@ const registerRoutes = function() {
    * value: should be the corrisponding instance of that view
    *
    */ _modelJs.registerRoute("home", (0, _homepageViewJsDefault.default));
-    _modelJs.registerRoute("bmi", (0, _bmiViewJsDefault.default));
+    _modelJs.registerRoute("calculator", (0, _calculatorViewJsDefault.default));
     _modelJs.registerRoute("barcode", (0, _barcodeViewJsDefault.default));
 // ... Register other routes here when needed ...
 };
@@ -646,15 +644,26 @@ const controlViewLinks = async function(element) {
     // render currentView
     renderCurrentView();
 };
-const controlBMICalculator = function(data) {
-    // validate input data
-    if (data.height <= 0 || data.weight <= 0) {
-        (0, _bmiViewJsDefault.default).renderErrorWrongValue();
+const controlCalculatorForm = function(data) {
+    // check data again to be sure (also if there is no 0 inside)
+    if (+data.height <= 0 || +data.weight <= 0 || +data.PAL <= 0 || +data.age <= 0) {
+        (0, _calculatorViewJsDefault.default).renderErrorWrongValue();
         return;
     }
-    // calculate the BMI and update state
+    // if everything is correct:
+    // 1. calculate BMI
     _modelJs.calculateUpdateBMI(data);
-// console.dir(data);
+    // console.log(model.state.bmi.currentLevel);
+    // 2. calculate BMR
+    _modelJs.calculateUpdateBMR(data);
+    // 3. calculate TDEE
+    _modelJs.calculateUpdateTDEE(data);
+    // 4. get all data to generate markup
+    _modelJs.setHealthMetricsSummury();
+    // 5. generate result markup html for UI
+    const resultMarkup = (0, _calculatorViewJsDefault.default).generateResultMarkup(_modelJs.state.summuryHealthData);
+    // 6. remove old result (if there are) and render new on page
+    (0, _calculatorViewJsDefault.default).renderResults(resultMarkup, _modelJs.state.summuryHealthData);
 };
 const controlBarcodeScanner = function() {
     // get new generated DOM elements
@@ -699,21 +708,21 @@ const controlGetProductFromBarcode = async function(barcodeValue) {
 };
 // ----- ENTRY POINT FUNCTION ----- //
 const init = function() {
-/**
+    /**
    * Entry point function based on publish–subscribe pattern
-   */ // registerRoutes();
-// renderCurrentView();
-// sidebarView.addHandlerManagerSibebar(controlSidebarWidth);
-// sidebarView.addHandlerManagerLinks(controlViewLinks);
-// homepageView.addHandlerButtonsLinks(controlViewLinks);
-// bmiView.addHandlerBMICalculator(controlBMICalculator);
-// barcodeView.addHandlerBarcodeScanner(controlBarcodeScanner);
-// barcodeView.addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
-// barcodeView.addHandlerCheckBarcode(controlGetProductFromBarcode);
+   */ registerRoutes();
+    renderCurrentView();
+    (0, _sidebarViewJsDefault.default).addHandlerManagerSibebar(controlSidebarWidth);
+    (0, _sidebarViewJsDefault.default).addHandlerManagerLinks(controlViewLinks);
+    (0, _homepageViewJsDefault.default).addHandlerButtonsLinks(controlViewLinks);
+    (0, _calculatorViewJsDefault.default).addHandlerGetFormData(controlCalculatorForm);
+    (0, _barcodeViewJsDefault.default).addHandlerBarcodeScanner(controlBarcodeScanner);
+    (0, _barcodeViewJsDefault.default).addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
+    (0, _barcodeViewJsDefault.default).addHandlerCheckBarcode(controlGetProductFromBarcode);
 };
 init();
 
-},{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","quagga":"fEVYk","./config.js":"k5Hzs","./model.js":"Y4A21","./views/sidebarView.js":"eUObu","./views/homepageView.js":"5HgCT","./views/bmiView.js":"hSar1","./views/fruitInfoView.js":"3vIxL","./views/barcodeView.js":"ktkUL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"49tUX":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","quagga":"fEVYk","./config.js":"k5Hzs","./model.js":"Y4A21","./views/sidebarView.js":"eUObu","./views/homepageView.js":"5HgCT","./views/calculatorView.js":"e6BL6","./views/barcodeView.js":"ktkUL","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"49tUX":[function(require,module,exports) {
 "use strict";
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
 require("52e9b3eefbbce1ed");
@@ -8230,11 +8239,14 @@ parcelHelpers.export(exports, "updateHash", ()=>updateHash);
 parcelHelpers.export(exports, "registerRoute", ()=>registerRoute);
 parcelHelpers.export(exports, "updateCurrentView", ()=>updateCurrentView);
 parcelHelpers.export(exports, "calculateUpdateBMI", ()=>calculateUpdateBMI);
+parcelHelpers.export(exports, "calculateUpdateBMR", ()=>calculateUpdateBMR);
+parcelHelpers.export(exports, "calculateUpdateTDEE", ()=>calculateUpdateTDEE);
+parcelHelpers.export(exports, "setHealthMetricsSummury", ()=>setHealthMetricsSummury);
 parcelHelpers.export(exports, "getBarcode", ()=>getBarcode);
 parcelHelpers.export(exports, "getProduct", ()=>getProduct);
 var _configJs = require("./config.js");
-var _bmiViewJs = require("./views/bmiView.js");
-var _bmiViewJsDefault = parcelHelpers.interopDefault(_bmiViewJs);
+var _calculatorViewJs = require("./views/calculatorView.js");
+var _calculatorViewJsDefault = parcelHelpers.interopDefault(_calculatorViewJs);
 var _quagga = require("quagga");
 var _quaggaDefault = parcelHelpers.interopDefault(_quagga);
 const state = {
@@ -8244,6 +8256,9 @@ const state = {
         barcode: null,
         product: {}
     },
+    bmr: null,
+    tdee: null,
+    tdeeWith10TEF: null,
     bmi: {
         currentBMI: null,
         currentLevel: null,
@@ -8298,7 +8313,8 @@ const state = {
                 max: 1000
             }
         }
-    }
+    },
+    summuryHealthData: null
 };
 // ----- HELPER FUNCTIONS ----- //
 const updateCurrentBMILevel = function() {
@@ -8326,7 +8342,8 @@ const updateCurrentView = function(hash) {
     state.currentView = state.routes[hash];
 };
 const calculateUpdateBMI = function(data) {
-    // FORMULA: BMI = weight / (height * height)
+    // FORMULA to Calculate Body Mass Index:
+    // BMI = weight / (height * height)
     // transform cm height in m
     const heightMeters = data.height / 100;
     // calculate the actual BMI
@@ -8335,8 +8352,36 @@ const calculateUpdateBMI = function(data) {
     state.bmi.currentBMI = +actualBMI.toFixed(1);
     // updatin currentLevel of BMI
     updateCurrentBMILevel();
-    // update UI: bmiView
-    (0, _bmiViewJsDefault.default).renderResultBMI(state.bmi.currentLevel);
+};
+const calculateUpdateBMR = function(data) {
+    // FORMULA to Calculate Basal Metabolic Rate (BMR)
+    // For men: BMR = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) + 5
+    // For women: BMR = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) - 161
+    const wightKg = +data.weight;
+    const heightCm = +data.height;
+    const ageYears = +data.age;
+    const neutralBMR = 10 * wightKg + 6.25 * heightCm - 5 * ageYears;
+    if (data.gender === `male`) state.bmr = neutralBMR + 5;
+    if (data.gender === `female`) state.bmr = neutralBMR - 161;
+};
+const calculateUpdateTDEE = function(data) {
+    // FORMULA to Calculate Total Daily Energy Expenditure (TDEE):
+    // TDEE = BMR×PAL
+    // this TDEE value will be without TEF
+    const pal = +data.pal;
+    const tdee = state.bmr * pal;
+    state.tdee = tdee;
+    // calculate the TDEE with estimated +10% of TEF of an average diet
+    const tdeeWithTEF = state.tdee * 1.1;
+    state.tdeeWith10TEF = tdeeWithTEF;
+};
+const setHealthMetricsSummury = function() {
+    state.summuryHealthData = {
+        bmi: state.bmi.currentLevel,
+        bmr: state.bmr.toFixed(2),
+        tdee: state.tdee.toFixed(2),
+        tdeeWithEstimatedTEF: state.tdeeWith10TEF.toFixed(2)
+    };
 };
 const getBarcode = function(domElement) {
     // promisifying function to make it wait until the code is read
@@ -8501,153 +8546,224 @@ const getProduct = async function(barcode) {
  // "upc_e_reader",
  // "i2of5_reader",
 
-},{"./config.js":"k5Hzs","./views/bmiView.js":"hSar1","quagga":"fEVYk","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hSar1":[function(require,module,exports) {
+},{"./config.js":"k5Hzs","./views/calculatorView.js":"e6BL6","quagga":"fEVYk","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"e6BL6":[function(require,module,exports) {
+// import { reject } from "core-js/fn/promise";
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _mainViewJs = require("./MainView.js");
 var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
-class BmiView extends (0, _mainViewJsDefault.default) {
-    //   _parentElement = document.querySelector(`bmi-view `);
-    _cleanResultContainer() {
-        this._mainElement.querySelector(`.bmi-container-result`).innerHTML = ``;
-    }
+var _configJs = require("../config.js");
+class CalculatorView extends (0, _mainViewJsDefault.default) {
+    //   _parentElement = document.querySelector(`.calculator-view `);
+    // calc-secondary--box is universal container to remove any 2nd child before adding one more
     _generateMarkupHtml() {
         return `
-    <div class="bmi-view hidden-right">
-        <div class="form--container">
-          <form class="bmi--form bmi--container">
-            <h2>Body Mass Index Adults</h2>
-            <div class="form__row">
-              <label class="form__label">Height</label>
-              <input type="number" class="form__input form__input--cm" placeholder="cm" />
-            </div>
-            <div class="form__row">
-              <label class="form__label">Weight</label>
-              <input type="number" class="form__input form__input--kg" placeholder="kg" />
-            </div>
-            <button class="btn calculate--bmi">Calculate</button>
-        </form>
-            <div class="bmi--container bmi-container-result">
-              <h2>Welcome to the BMI Calculator</h2>
-              <h3 class="bmi--result--sentence">Your results will be displayed here.</h3>
-            </div>
-        </div>
+    <div class="calculator-view hidden-right">
+          <div class="container">
+            <form class="calculator--form">
+              <h2>EateryMeter's Adult Body Metrics: Quick Health Insights</h2>
 
-        <article class="article">
-            <h2>What is BMI?</h2>
-            <p>
-              Body Mass Index (BMI) is a measurement that uses height and weight
-              to estimate a person's body fat, providing an easy and quick
-              method to assess whether someone has an appropriate body weight
-              for their height. BMI is widely used in the medical community to
-              screen for obesity, underweight, and healthy weight ranges, though
-              it does not directly measure body fat percentage.
-            </p>
-            <h2>How to Calculate BMI</h2>
-            <p>
-              BMI is calculated by dividing a person's weight in kilograms (kg)
-              by their height in meters (m) squared. The formula is:
-            </p>
-            <div class="formula">
-              BMI =
-              <span class="fraction"
-                ><span class="weight">Weight in kg</span
-                ><span class="line"></span
-                ><span class="height">(Height in m)<sup>2</sup></span></span
-              >
-            </div>
-            <h2>Interesting Facts about BMI</h2>
-            <ul>
-              <li>
-                <strong>Historical Context:</strong> The BMI was devised in the
-                early 19th century by Adolphe Quetelet, a Belgian astronomer,
-                mathematician, statistician, and sociologist. It was originally
-                called the Quetelet Index.
-              </li>
-              <li>
-                <strong>Global Standards Vary:</strong> While the World Health
-                Organization (WHO) provides a standard BMI classification, some
-                countries and regions have adapted their classifications to
-                better fit their population's health profiles.
-              </li>
-              <li>
-                <strong>Not a Direct Measure of Health:</strong> While BMI is a
-                useful screening tool, it does not directly measure body fat or
-                account for muscle mass, bone density, overall body composition,
-                and racial and sex differences.
-              </li>
-              <li>
-                <strong>Use in Public Health:</strong> BMI is widely used in
-                epidemiological studies to correlate the health effects of being
-                overweight or obese with population health.
-              </li>
-              <li>
-                <strong>Alternative Measurements: </strong> Due to BMI's
-                limitations, other measurements like waist-to-hip ratio (WHR),
-                waist-to-height ratio (WHtR), and body fat percentage are also
-                used to provide a more complete picture of an individual's
-                health.
-              </li>
-            </ul>
-        </article>
-    </div>
+              <div class="form__radio-raw">
+                <div class="radio-raw--choice">
+                  <input
+                    required
+                    class="custom--radio-input"
+                    type="radio"
+                    id="male"
+                    name="gender"
+                    value="male"
+                  />
+                  <label class="form__label" for="male">Male</label>
+                </div>
+                <div class="radio-raw--choice">
+                  <input
+                    class="custom--radio-input"
+                    type="radio"
+                    id="female"
+                    name="gender"
+                    value="female"
+                  />
+                  <label class="form__label" for="female">Female</label>
+                </div>
+              </div>
+
+              <div class="form__row">
+                <label class="form__label">Height</label>
+                <input
+                  name="height"
+                  required
+                  type="number"
+                  class="form__input form__input--cm"
+                  placeholder="cm"
+                />
+              </div>
+
+              <div class="form__row">
+                <label class="form__label">Weight</label>
+                <input
+                  name="weight"
+                  required
+                  type="number"
+                  class="form__input form__input--kg"
+                  placeholder="kg"
+                />
+              </div>
+
+              <div class="form__row">
+                <label class="form__label">Age</label>
+                <input
+                  name="age"
+                  required
+                  type="number"
+                  class="form__input form__input--years"
+                  placeholder="years"
+                />
+              </div>
+
+              <div class="form__select-row">
+                <label class="form__label">Physical Activity Level</label>
+                <select required name="pal">
+                  <option value="">--Please choose an option--</option>
+                  <option value="1.2">
+                    Sedentary (little or no exercise)
+                  </option>
+                  <option value="1.375">
+                    Lightly active (light exercise/sports 1-3 days/week)
+                  </option>
+                  <option value="1.55">
+                    Moderately active (moderate exercise/sports 3-5 days/week)
+                  </option>
+                  <option value="1.725">
+                    Very active (hard exercise/sports 6-7 days a week)
+                  </option>
+                  <option value="1.9">
+                    Extra active (very hard exercise/sports & a physical job)
+                  </option>
+                </select>
+              </div>
+
+              <button class="btn calculate--calculator">Calculate</button>
+            </form>
+          </div>
+        </div>
     `;
     }
     _generateErrorMarkup() {
-        return `<h2>\u{26A0}\u{FE0F}Please Enter the Correct Value...</h2>`;
-    }
-    _generateResultMarkup(levelObject) {
         return `
-    <h2>Your Body Mass Index is</h2>
-    <h1 class="bmi--result--number">${levelObject.bmiValue}</h1>
-    <h3 class="bmi--result--sentence">${levelObject.description}</h3>
+    <div class="container calculator-error calc-secondary--box hidden-right">
+      <h2>Something went wrong...</h2>
+      <h3>Please Enter the Correct Value.</h3>
+    </div>
+    `;
+    }
+    _updateResultsStyle(healthData) {
+        this._mainElement.querySelector(`.calculator-container-result`).style.borderColor = healthData.bmi.color;
+    }
+    _checkOrRemoveElement(className) {
+        return new Promise((resolve, reject)=>{
+            // check if there is already this element on page
+            const elementDOM = this._mainElement.querySelector(`${className}`);
+            // if no element just exit function
+            if (!elementDOM) {
+                resolve();
+                return;
+            }
+            // if there is already a message add hidden class to create animation
+            elementDOM.classList.add(`hidden-right`);
+            // Wait for the CSS transition to finish before removing the div and resolving the promise
+            setTimeout(()=>{
+                elementDOM.remove();
+                resolve();
+            }, _configJs.CSS_TRANSITION_TIME_MS);
+        });
+    }
+    generateResultMarkup(healthData) {
+        return `
+    <div class="container calculator-container-result calc-secondary--box hidden-right">
+        <h2>Your Personal Health Metrics Results:</h2>
+        <div class="form__row">
+          <h3>BMI:</h3>
+          <h3 class="bmi--result--number">${healthData.bmi.bmiValue} (${healthData.bmi.description})</h3>
+        </div>
+        <div class="form__row">
+          <h3>BMR:</h3>
+          <h3 class="bmr--result--number">${healthData.bmr} kcal</h3>
+        </div>
+        <div class="form__row">
+          <h3>TDEE (without TEF):</h3>
+          <h3 class="tdee--result--number">${healthData.tdee} kcal per day</h3>
+        </div>
+        <div class="form__row">
+          <h3>TDEE (+10% TEF):</h3>
+          <h3 class="tdee--result--number">${healthData.tdeeWithEstimatedTEF} kcal per day</h3>
+        </div>
+        <p class="disclaimer">
+          <strong>Health Disclaimer for EateryMeter</strong>
+          <br />
+          EateryMeter's health metrics (BMI, BMR, TDEE) are general guides,
+          not medical advice. Individual health varies. Always consult a
+          healthcare provider for personal advice. Use at your own risk.
+        </p>
+      </div>
     `;
     }
     renderErrorWrongValue() {
-        this._cleanResultContainer();
-        const errorMarkup = this._generateErrorMarkup();
-        this._mainElement.querySelector(`.bmi-container-result`).innerHTML = errorMarkup;
-    }
-    renderResultBMI(levelObject) {
-        // clean container
-        this._cleanResultContainer();
-        // generate markup html
-        const resultMarkup = this._generateResultMarkup(levelObject);
-        // select DOM element result container
-        const containerResult = this._mainElement.querySelector(`.bmi-container-result`);
-        // update UI
-        containerResult.innerHTML = resultMarkup;
-        // dinamically update border color and font color
-        containerResult.style.borderColor = `${levelObject.color}`;
-        // dinamically update text color of description
-        containerResult.querySelector(`h3`).style.color = `${levelObject.color}`;
-    }
-    addHandlerBMICalculator(subscribeFunc) {
-        this._mainElement.addEventListener(`click`, (e)=>{
-            e.preventDefault();
-            // check if button is clicked
-            const btnCalc = e.target.closest(`.calculate--bmi`);
-            if (!btnCalc) return;
-            // make sure the form is still there
-            const form = btnCalc.closest(`.bmi--form`);
-            if (!form) return;
-            // take the values from form and convert them into number
-            const cmValue = +form.querySelector(`.form__input--cm`).value;
-            const kgValue = +form.querySelector(`.form__input--kg`).value;
-            // empty the form from current values
-            form.querySelector(`.form__input--cm`).value = ``;
-            form.querySelector(`.form__input--kg`).value = ``;
-            // send object with input values to controller
-            subscribeFunc({
-                height: cmValue,
-                weight: kgValue
-            });
+        // check if there is already an error message on page, in case remove it
+        this._checkOrRemoveElement(`.calc-secondary--box`).then(()=>{
+            // generate new html markup
+            const errorMarkup = this._generateErrorMarkup();
+            // add it to UI
+            this._mainElement.querySelector(`.calculator-view`).insertAdjacentHTML(`beforeend`, errorMarkup);
+            // then remove hidden class to add some transtion animation
+            setTimeout(()=>{
+                this._mainElement.querySelector(`.calculator-error`).classList.remove(`hidden-right`);
+            }, _configJs.CSS_TRANSITION_TIME_MS);
         });
     }
+    renderResults(markupHtml, healthData) {
+        this._checkOrRemoveElement(`.calc-secondary--box`).then(()=>{
+            // Add it to UI
+            this._mainElement.querySelector(`.calculator-view`).insertAdjacentHTML(`beforeend`, markupHtml);
+            // Return a new promise that resolves after the timeout
+            return new Promise((resolve)=>{
+                setTimeout(()=>{
+                    this._mainElement.querySelector(`.calculator-container-result`).classList.remove(`hidden-right`);
+                    // Resolve the promise after the class removal and timeout
+                    resolve();
+                }, _configJs.CSS_TRANSITION_TIME_MS);
+            });
+        }).then(()=>{
+            // chanining methods to be sure to add style to an already existing element
+            this._updateResultsStyle(healthData);
+        });
+    }
+    addHandlerGetFormData(subscriberFn) {
+        // listening the main element (always exists)#
+        // set `useCapture` parameter of event listener to true
+        // which means the event listener is set in the capture phase, not the bubbling phase
+        this._mainElement.addEventListener("submit", (e)=>{
+            // Prevent the default form submission
+            e.preventDefault();
+            // Check if the event target is a form or find the closest parent form
+            const calcForm = e.target.closest(`.calculator--form`);
+            // guard clause
+            if (!calcForm) return;
+            // get the form object and obtain an array by spreading it
+            const dataArray = [
+                ...new FormData(calcForm)
+            ];
+            // convert to actual array from dataArray (has entries structure)
+            const dataObj = Object.fromEntries(dataArray);
+            // Reset the form to its default values
+            calcForm.reset();
+            // handled by controller
+            subscriberFn(dataObj);
+        }, true);
+    }
 }
-exports.default = new BmiView();
+exports.default = new CalculatorView();
 
-},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8ymy6":[function(require,module,exports) {
+},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../config.js":"k5Hzs"}],"8ymy6":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _configJs = require("../config.js");
@@ -8733,8 +8849,9 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _mainViewJs = require("./MainView.js");
 var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
-var _chefSvg = require("../../img/chef.svg");
-var _chefSvgDefault = parcelHelpers.interopDefault(_chefSvg);
+// import chefImage from "../../img/chef.svg";
+var _logoSmallPng = require("../../img/logo-small.png");
+var _logoSmallPngDefault = parcelHelpers.interopDefault(_logoSmallPng);
 class HomepageView extends (0, _mainViewJsDefault.default) {
     // _parentElement = document.querySelector(`.homepage--container`);
     _generateMarkupHtml() {
@@ -8743,8 +8860,8 @@ class HomepageView extends (0, _mainViewJsDefault.default) {
         <div class="img-wrapper--chef noSelect">
         <img
             class="image up-down-animated"
-            src="${0, _chefSvgDefault.default}"
-            alt="cartoon image of a chef"
+            src="${0, _logoSmallPngDefault.default}"
+            alt="image of an avocado"
         />
         </div>
         <div class="homepage-content">
@@ -8760,10 +8877,9 @@ class HomepageView extends (0, _mainViewJsDefault.default) {
                 informed, and tastier journey to wellness today.
             </p>
             <div class="btn--container">
-                <a href="#home" class="btn btn--hashlink noSelect" role="button">Home</a>
-                <a href="#bmi" class="btn btn--hashlink noSelect" role="button">Calc BMI</a>
-                <a href="#fruit" class="btn btn--hashlink noSelect" role="button">Fruit Info</a>
-                <a href="#barcode" class="btn btn--hashlink noSelect" role="button">Barcode</a>
+              <a href="#home" class="btn btn--hashlink noSelect" role="button">Home</a>
+              <a href="#calculator" class="btn btn--hashlink noSelect" role="button">Calculator</a>
+              <a href="#barcode" class="btn btn--hashlink noSelect" role="button">Barcode</a>
             </div>
         </div>
     </div>
@@ -8779,10 +8895,10 @@ class HomepageView extends (0, _mainViewJsDefault.default) {
 }
 exports.default = new HomepageView();
 
-},{"./MainView.js":"8ymy6","../../img/chef.svg":"70Ss1","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"70Ss1":[function(require,module,exports) {
-module.exports = require("798a32a3db0abed8").getBundleURL("hWUTQ") + "chef.32d33305.svg" + "?" + Date.now();
+},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../../img/logo-small.png":"1uiQE"}],"1uiQE":[function(require,module,exports) {
+module.exports = require("b1cff42d6b6f0f2e").getBundleURL("hWUTQ") + "logo-small.597e3d1d.png" + "?" + Date.now();
 
-},{"798a32a3db0abed8":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+},{"b1cff42d6b6f0f2e":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";
 var bundleURL = {};
 function getBundleURLCached(id) {
@@ -8817,33 +8933,7 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"3vIxL":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _mainViewJs = require("./MainView.js");
-var _mainViewJsDefault = parcelHelpers.interopDefault(_mainViewJs);
-class FruitInfoView extends (0, _mainViewJsDefault.default) {
-    _generateMarkupHtml() {
-        return `
-    <article class="article comingsoon--container hidden-right">
-        <h1>\u{1F34E} Fruit Nutritional Encyclopedia - Coming Soon! \u{1F34C}</h1>
-        <hr class="comingsoon--hr" />
-        <h4>
-            Get ready to explore a world of flavors and nutrition! Our upcoming
-            feature will unlock the secrets behind every bite of your favorite
-            fruits. From avocados to zucchinis, discover fascinating data like
-            calories, sugar content, and much more. Whether you're a fitness
-            enthusiast or just looking to make healthier food choices, this
-            feature will be your ultimate guide to the nutritional value of
-            fruits. Stay tuned for an exciting journey to wellness!
-        </h4>
-    </article>
-    `;
-    }
-}
-exports.default = new FruitInfoView();
-
-},{"./MainView.js":"8ymy6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ktkUL":[function(require,module,exports) {
+},{}],"ktkUL":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _configJs = require("../config.js");

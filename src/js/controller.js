@@ -8,8 +8,7 @@ import * as cfg from "./config.js";
 import * as model from "./model.js";
 import sidebarView from "./views/sidebarView.js";
 import homepageView from "./views/homepageView.js";
-import bmiView from "./views/bmiView.js";
-import fruitInfoView from "./views/fruitInfoView.js";
+import calculatorView from "./views/calculatorView.js";
 import barcodeView from "./views/barcodeView.js";
 
 // if (module.hot) {
@@ -26,7 +25,7 @@ const registerRoutes = function () {
    *
    */
   model.registerRoute("home", homepageView);
-  model.registerRoute("bmi", bmiView);
+  model.registerRoute("calculator", calculatorView);
   model.registerRoute("barcode", barcodeView);
   // ... Register other routes here when needed ...
 };
@@ -72,17 +71,40 @@ const controlViewLinks = async function (element) {
   renderCurrentView();
 };
 
-const controlBMICalculator = function (data) {
-  // validate input data
-  if (data.height <= 0 || data.weight <= 0) {
-    bmiView.renderErrorWrongValue();
+const controlCalculatorForm = function (data) {
+  // check data again to be sure (also if there is no 0 inside)
+  if (
+    +data.height <= 0 ||
+    +data.weight <= 0 ||
+    +data.PAL <= 0 ||
+    +data.age <= 0
+  ) {
+    calculatorView.renderErrorWrongValue();
     return;
   }
 
-  // calculate the BMI and update state
-  model.calculateUpdateBMI(data);
+  // if everything is correct:
 
-  // console.dir(data);
+  // 1. calculate BMI
+  model.calculateUpdateBMI(data);
+  // console.log(model.state.bmi.currentLevel);
+
+  // 2. calculate BMR
+  model.calculateUpdateBMR(data);
+
+  // 3. calculate TDEE
+  model.calculateUpdateTDEE(data);
+
+  // 4. get all data to generate markup
+  model.setHealthMetricsSummury();
+
+  // 5. generate result markup html for UI
+  const resultMarkup = calculatorView.generateResultMarkup(
+    model.state.summuryHealthData
+  );
+
+  // 6. remove old result (if there are) and render new on page
+  calculatorView.renderResults(resultMarkup, model.state.summuryHealthData);
 };
 
 const controlBarcodeScanner = function () {
@@ -140,14 +162,14 @@ const init = function () {
   /**
    * Entry point function based on publish–subscribe pattern
    */
-  // registerRoutes();
-  // renderCurrentView();
-  // sidebarView.addHandlerManagerSibebar(controlSidebarWidth);
-  // sidebarView.addHandlerManagerLinks(controlViewLinks);
-  // homepageView.addHandlerButtonsLinks(controlViewLinks);
-  // bmiView.addHandlerBMICalculator(controlBMICalculator);
-  // barcodeView.addHandlerBarcodeScanner(controlBarcodeScanner);
-  // barcodeView.addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
-  // barcodeView.addHandlerCheckBarcode(controlGetProductFromBarcode);
+  registerRoutes();
+  renderCurrentView();
+  sidebarView.addHandlerManagerSibebar(controlSidebarWidth);
+  sidebarView.addHandlerManagerLinks(controlViewLinks);
+  homepageView.addHandlerButtonsLinks(controlViewLinks);
+  calculatorView.addHandlerGetFormData(controlCalculatorForm);
+  barcodeView.addHandlerBarcodeScanner(controlBarcodeScanner);
+  barcodeView.addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
+  barcodeView.addHandlerCheckBarcode(controlGetProductFromBarcode);
 };
 init();

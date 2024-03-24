@@ -1,5 +1,5 @@
 import * as cfg from "./config.js";
-import bmiView from "./views/bmiView.js";
+import calculatorView from "./views/calculatorView.js";
 import Quagga from "quagga";
 
 export const state = {
@@ -9,6 +9,9 @@ export const state = {
     barcode: null,
     product: {},
   },
+  bmr: null,
+  tdee: null,
+  tdeeWith10TEF: null,
   bmi: {
     currentBMI: null,
     currentLevel: null,
@@ -64,6 +67,7 @@ export const state = {
       },
     },
   },
+  summuryHealthData: null,
 };
 
 // ----- HELPER FUNCTIONS ----- //
@@ -103,7 +107,8 @@ export const updateCurrentView = function (hash) {
 };
 
 export const calculateUpdateBMI = function (data) {
-  // FORMULA: BMI = weight / (height * height)
+  // FORMULA to Calculate Body Mass Index:
+  // BMI = weight / (height * height)
 
   // transform cm height in m
   const heightMeters = data.height / 100;
@@ -116,9 +121,43 @@ export const calculateUpdateBMI = function (data) {
 
   // updatin currentLevel of BMI
   updateCurrentBMILevel();
+};
 
-  // update UI: bmiView
-  bmiView.renderResultBMI(state.bmi.currentLevel);
+export const calculateUpdateBMR = function (data) {
+  // FORMULA to Calculate Basal Metabolic Rate (BMR)
+  // For men: BMR = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) + 5
+  // For women: BMR = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) - 161
+
+  const wightKg = +data.weight;
+  const heightCm = +data.height;
+  const ageYears = +data.age;
+
+  const neutralBMR = 10 * wightKg + 6.25 * heightCm - 5 * ageYears;
+  if (data.gender === `male`) state.bmr = neutralBMR + 5;
+  if (data.gender === `female`) state.bmr = neutralBMR - 161;
+};
+
+export const calculateUpdateTDEE = function (data) {
+  // FORMULA to Calculate Total Daily Energy Expenditure (TDEE):
+  // TDEE = BMR×PAL
+  // this TDEE value will be without TEF
+  const pal = +data.pal;
+  const tdee = state.bmr * pal;
+
+  state.tdee = tdee;
+
+  // calculate the TDEE with estimated +10% of TEF of an average diet
+  const tdeeWithTEF = state.tdee * 1.1;
+  state.tdeeWith10TEF = tdeeWithTEF;
+};
+
+export const setHealthMetricsSummury = function () {
+  state.summuryHealthData = {
+    bmi: state.bmi.currentLevel,
+    bmr: state.bmr.toFixed(2),
+    tdee: state.tdee.toFixed(2),
+    tdeeWithEstimatedTEF: state.tdeeWith10TEF.toFixed(2),
+  };
 };
 
 export const getBarcode = function (domElement) {

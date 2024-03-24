@@ -56,7 +56,7 @@
     <link rel="stylesheet" href="./src/css/main.css" />
     <link rel="stylesheet" href="./src/css/footer-style.css" />
     <link rel="stylesheet" href="./src/css/view-homepage.css" />
-    <link rel="stylesheet" href="./src/css/view-BMI.css" />
+    <link rel="stylesheet" href="./src/css/view-calculator.css" />
     <link rel="stylesheet" href="./src/css/view-barcode.css" />
     <link rel="stylesheet" href="./src/css/comingSoon.css" />
 
@@ -111,11 +111,11 @@
             <div class="__feature--container">
               <img
                 class="icon painted"
-                src="./src/img/bowl-food-solid.svg"
+                src="./src/img/calculator-solid.svg"
                 alt="dish"
               />
-              <a href="#bmi" class="feature--link feature--text"
-                >Calculate BMI</a
+              <a href="#calculator" class="feature--link feature--text"
+                >Calculator</a
               >
             </div>
           </li>
@@ -165,8 +165,8 @@
           <div class="img-wrapper--chef noSelect">
             <img
               class="image up-down-animated"
-              src="./src/img/chef.svg"
-              alt="cartoon image of a chef"
+              src="./src/img/logo-small.png"
+              alt="image of an avocado"
             />
           </div>
           <div class="homepage-content">
@@ -183,70 +183,138 @@
             </p>
             <div class="btn--container">
               <a href="#home" class="btn btn--hashlink noSelect" role="button">Home</a>
-              <a href="#bmi" class="btn btn--hashlink noSelect" role="button">Calc BMI</a>
-              <a href="#fruit" class="btn btn--hashlink noSelect" role="button">Fruit Info</a>
+              <a href="#calculator" class="btn btn--hashlink noSelect" role="button">Calculator</a>
               <a href="#barcode" class="btn btn--hashlink noSelect" role="button">Barcode</a>
             </div>
           </div>
         </div> -->
 
-        <!---- MAIN => BMI VIEW hidden-right ---->
+        <!---- MAIN => CALCULATOR VIEW hidden-right ---->
 
-        <div class="bmi-view">
-          <div class="form--container">
-            <form class="bmi--form bmi--container">
-              <h2>Body Mass Index Adults</h2>
-              <div class="form__row">
-                <input type="radio" id="male" name="gender" value="male" />
-                <label class="form__label" for="male">male</label>
-                <input type="radio" id="female" name="gender" value="female" />
-                <label class="form__label" for="female">female</label>
+        <!-- <div class="calculator-view hidden-right">
+          <div class="container">
+            <form class="calculator--form">
+              <h2>EateryMeter's Adult Body Metrics: Quick Health Insights</h2>
+
+              <div class="form__radio-raw">
+                <div class="radio-raw--choice">
+                  <input
+                    required
+                    class="custom--radio-input"
+                    type="radio"
+                    id="male"
+                    name="gender"
+                    value="male"
+                  />
+                  <label class="form__label" for="male">Male</label>
+                </div>
+                <div class="radio-raw--choice">
+                  <input
+                    class="custom--radio-input"
+                    type="radio"
+                    id="female"
+                    name="gender"
+                    value="female"
+                  />
+                  <label class="form__label" for="female">Female</label>
+                </div>
               </div>
+
               <div class="form__row">
                 <label class="form__label">Height</label>
                 <input
+                  name="height"
+                  required
                   type="number"
                   class="form__input form__input--cm"
                   placeholder="cm"
                 />
               </div>
+
               <div class="form__row">
                 <label class="form__label">Weight</label>
                 <input
+                  name="weight"
+                  required
                   type="number"
                   class="form__input form__input--kg"
                   placeholder="kg"
                 />
               </div>
+
               <div class="form__row">
                 <label class="form__label">Age</label>
                 <input
+                  name="age"
+                  required
                   type="number"
                   class="form__input form__input--years"
                   placeholder="years"
                 />
               </div>
-              <button class="btn calculate--bmi">Calculate</button>
+
+              <div class="form__select-row">
+                <label class="form__label">Physical Activity Level</label>
+                <select required name="pal">
+                  <option value="">--Please choose an option--</option>
+                  <option value="1.2">
+                    Sedentary (little or no exercise)
+                  </option>
+                  <option value="1.375">
+                    Lightly active (light exercise/sports 1-3 days/week)
+                  </option>
+                  <option value="1.55">
+                    Moderately active (moderate exercise/sports 3-5 days/week)
+                  </option>
+                  <option value="1.725">
+                    Very active (hard exercise/sports 6-7 days a week)
+                  </option>
+                  <option value="1.9">
+                    Extra active (very hard exercise/sports & a physical job)
+                  </option>
+                </select>
+              </div>
+
+              <button class="btn calculate--calculator">Calculate</button>
             </form>
-
-            <div class="bmi--container bmi-container-result">
-              WELCOME MESSAGE:
-              <h2>Welcome to the BMI Calculator</h2>
-              <h3 class="bmi--result--sentence">
-                Your results will be displayed here.
-              </h3>
-
-              RESULT:
-              <h2>Your Body Mass Index is</h2>
-              <h1 class="bmi--result--number">24.9</h1>
-              <h3 class="bmi--result--sentence">Normal weight</h3>
-
-              ERROR:
-              <h2>⚠️Please Enter the Correct Value...</h2>
-            </div>
           </div>
+        </div> -->
 
-          <article class="article">
+        <!-- <div class="container calculator-container-result calc-secondary--box hidden-right">
+          <h2>Your Personal Health Metrics Results:</h2>
+          <div class="form__row">
+            <h3>BMI:</h3>
+            <h3 class="bmi--result--number">24.5 (normal weight)</h3>
+          </div>
+          <div class="form__row">
+            <h3>BMR:</h3>
+            <h3 class="bmr--result--number">1717 kcal</h3>
+          </div>
+          <div class="form__row">
+            <h3>TDEE (without TEF):</h3>
+            <h3 class="tdee--result--number">2613 kcal per day</h3>
+          </div>
+          <div class="form__row">
+            <h3>TDEE (+10% TEF):</h3>
+            <h3 class="tdee--result--number">2874.3 kcal per day</h3>
+          </div>
+          <p class="disclaimer">
+            <strong>Health Disclaimer for EateryMeter</strong>
+            <br />
+            EateryMeter's health metrics (BMI, BMR, TDEE) are general guides,
+            not medical advice. Individual health varies. Always consult a
+            healthcare provider for personal advice. Use at your own risk.
+          </p>
+        </div> -->
+
+        <!-- 
+        <div class="container calculator-error calc-secondary--box hidden-right">
+          <h2>Something went wrong...</h2>
+          <h3>Please Enter the Correct Value.</h3>
+        </div>
+         -->
+
+        <!-- <article class="article what-is-bmi">
             <h2>What is BMI?</h2>
             <p>
               Body Mass Index (BMI) is a measurement that uses height and weight
@@ -302,8 +370,7 @@
                 health.
               </li>
             </ul>
-          </article>
-        </div>
+          </article> -->
 
         <!---- MAIN => BARCODE VIEW ---->
 

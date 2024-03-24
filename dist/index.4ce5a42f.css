@@ -44,7 +44,7 @@ h1 {
   box-shadow: var(--shadow-colors);
   background-color: var(--general-container-bg-color);
   transition: all var(--transition-time) ease;
-  padding: .5rem;
+  padding: .6rem;
   overflow: hidden;
 }
 
@@ -70,6 +70,7 @@ h1 {
   align-items: center;
   width: 6rem;
   height: 3rem;
+  margin: .5rem;
   font-weight: 600;
   text-decoration: none;
   display: flex;
@@ -93,7 +94,37 @@ h1 {
 .form__row {
   grid-template-columns: 1fr 1fr;
   grid-auto-flow: row;
+  margin-bottom: .6rem;
   display: grid;
+}
+
+.form__radio-raw {
+  justify-content: start;
+  align-items: center;
+  display: flex;
+}
+
+.radio-raw--choice {
+  padding: .5rem 1rem;
+}
+
+input[type="radio"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: .5rem;
+}
+
+.custom--radio-input {
+  appearance: none;
+  background-color: var(--general-container-bg-color);
+  outline: .2rem solid var(--text-h1-color);
+  border: .2rem solid #fff;
+  border-radius: 50%;
+}
+
+.custom--radio-input:checked {
+  background-color: var(--text-h1-color);
+  animation: .1s linear 3 alternate outline-checked;
 }
 
 .form__label {
@@ -113,6 +144,27 @@ h1 {
 
 .form__input:focus {
   outline: none;
+}
+
+.form__select-row {
+  flex-direction: column;
+  display: flex;
+}
+
+.form__select-row .form__label {
+  margin-bottom: .6rem;
+}
+
+.form__select-row select {
+  width: 90%;
+  height: 2rem;
+  font-size: 1.2rem;
+}
+
+@media (width <= 600px) {
+  .form__select-row select {
+    width: 98%;
+  }
 }
 
 .hidden-top {

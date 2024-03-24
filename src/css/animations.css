@@ -9,18 +9,27 @@
     transform: translateY(0);
   }
   25% {
-    transform: translateY(0.6rem);
+    transform: translateY(0.8rem);
   }
   75% {
-    transform: translateY(0.6rem);
+    transform: translateY(0.8rem);
   }
 }
 
+@keyframes outline-checked {
+  0% {
+      outline-offset: 0;
+  }
+
+  100% {
+      outline-offset: -0.2rem;
+  }
+}
 
 /*/ //////////
 // CLASSES ///////////////////////////////////////////////////////
 ////////// */
 
 .up-down-animated {
-  animation: uoDownAnimation 8s linear infinite both;
+  animation: uoDownAnimation 6s linear infinite both;
 }

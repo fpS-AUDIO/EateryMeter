@@ -52,7 +52,7 @@ h1 {
 /* ----- CONTAINERS ----- */
 
 .container {
-  padding: 0.5rem;
+  padding: 0.6rem;
   overflow: hidden;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
@@ -69,6 +69,7 @@ h1 {
 .btn {
   width: 6rem;
   height: 3rem;
+  margin: 0.5rem;
   appearance: none;
   backface-visibility: hidden;
   background-color: var(--button-bg-color);
@@ -110,6 +111,36 @@ h1 {
   display: grid;
   grid-auto-flow: row;
   grid-template-columns: 1fr 1fr;
+  margin-bottom: 0.6rem;
+}
+
+.form__radio-raw {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+}
+.radio-raw--choice {
+  padding: 0.5rem 1rem;
+}
+
+input[type="radio"] {
+  height: 1.2rem;
+  width: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.custom--radio-input {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0.2rem solid #fff;
+  background-color: var(--general-container-bg-color);
+  border-radius: 50%;
+  outline: 0.2rem solid var(--text-h1-color);
+}
+
+.custom--radio-input:checked {
+  background-color: var(--text-h1-color);
+  animation: outline-checked 100ms linear 3 alternate;
 }
 
 .form__label {
@@ -126,8 +157,31 @@ h1 {
   border-bottom: var(--border-width) solid var(--text-h1-color);
   transition: all var(--transition-time) ease;
 }
+
 .form__input:focus {
   outline: none;
+}
+
+.form__select-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form__select-row .form__label {
+  margin-bottom: 0.6rem;
+}
+
+.form__select-row select {
+  width: 90%;
+  height: 2rem;
+  font-size: 1.2rem;
+  /* border-radius: 10px; */
+}
+
+@media (max-width: 600px) {
+  .form__select-row select {
+    width: 98%;
+  }
 }
 
 /* ----- HIDDEN CLASSES ----- */

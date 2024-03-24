@@ -1,33 +1,32 @@
-.bmi-view {
+.calculator-view {
   transition: all var(--transition-time) ease;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
 }
 
-.bmi-view .container {
-  max-width: 40rem;
+.calculator-view .container {
+  max-width: 50rem;
+  margin-bottom: 1rem;
 }
 
-.bmi-view .bmi--form h2, .bmi-view .bmi--form h3 {
-  text-align: center;
-}
-
-.bmi-view h2 {
+.calculator-view h2 {
   color: var(--text-h1-color);
-  padding-top: 1rem;
+  text-align: center;
+  padding: 1rem;
   font-weight: 800;
 }
 
-.bmi-view h3 {
-  color: var(--text-h1-color);
+.calculator-view h3 {
   padding-bottom: 1rem;
   font-weight: 800;
 }
 
-.bmi-view .btn {
+.calculator-view .btn {
   margin-top: 1rem;
 }
 
-.bmi-view .bmi-container-result {
-  text-align: center;
+.calculator-view .calculator-container-result {
   border-color: green;
   border-left-style: solid;
   border-left-width: .5rem;
@@ -35,7 +34,17 @@
   border-bottom-left-radius: 0;
 }
 
-.bmi-view .article {
+.calculator-view .disclaimer {
+  text-align: center;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.calculator-view .calculator-error h3 {
+  text-align: center;
+}
+
+.calculator-view .article {
   background-color: var(--general-container-bg-color-2);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-colors);
@@ -45,41 +54,41 @@
 }
 
 @supports ((-webkit-backdrop-filter: blur(10px))) or (backdrop-filter: blur(10px)) {
-  .bmi-view .article {
+  .calculator-view .article {
     backdrop-filter: blur(10px);
   }
 }
 
-.bmi-view .article:hover {
+.calculator-view .article:hover {
   box-shadow: var(--shadow-colors-hover);
 }
 
-.bmi-view ul {
+.calculator-view ul {
   padding-left: 1rem;
   list-style-position: outside;
 }
 
-.bmi-view li {
+.calculator-view li {
   margin-bottom: .5rem;
 }
 
-.bmi-view .formula {
+.calculator-view .formula {
   margin-top: 1rem;
   font-size: 1.2rem;
 }
 
-.bmi-view .fraction {
+.calculator-view .fraction {
   text-align: center;
   display: inline-block;
 }
 
-.bmi-view .line {
+.calculator-view .line {
   border-top: .15rem solid #000;
   display: block;
 }
 
-.bmi-view .weight, .bmi-view .height {
+.calculator-view .weight, .calculator-view .height {
   padding: .4rem;
   display: block;
 }
-/*# sourceMappingURL=index.7ad9d85d.css.map */
+/*# sourceMappingURL=index.abe9bb72.css.map */

@@ -1,5 +1,6 @@
 import MainView from "./MainView.js";
-import chefImage from "../../img/chef.svg";
+// import chefImage from "../../img/chef.svg";
+import logoImage from "../../img/logo-small.png";
 
 class HomepageView extends MainView {
   // _parentElement = document.querySelector(`.homepage--container`);
@@ -9,8 +10,8 @@ class HomepageView extends MainView {
         <div class="img-wrapper--chef noSelect">
         <img
             class="image up-down-animated"
-            src="${chefImage}"
-            alt="cartoon image of a chef"
+            src="${logoImage}"
+            alt="image of an avocado"
         />
         </div>
         <div class="homepage-content">
@@ -26,10 +27,9 @@ class HomepageView extends MainView {
                 informed, and tastier journey to wellness today.
             </p>
             <div class="btn--container">
-                <a href="#home" class="btn btn--hashlink noSelect" role="button">Home</a>
-                <a href="#bmi" class="btn btn--hashlink noSelect" role="button">Calc BMI</a>
-                <a href="#fruit" class="btn btn--hashlink noSelect" role="button">Fruit Info</a>
-                <a href="#barcode" class="btn btn--hashlink noSelect" role="button">Barcode</a>
+              <a href="#home" class="btn btn--hashlink noSelect" role="button">Home</a>
+              <a href="#calculator" class="btn btn--hashlink noSelect" role="button">Calculator</a>
+              <a href="#barcode" class="btn btn--hashlink noSelect" role="button">Barcode</a>
             </div>
         </div>
     </div>
