@@ -706,6 +706,9 @@ const controlGetProductFromBarcode = async function(barcodeValue) {
         });
     }
 };
+// const controlModalWindowses = function(){
+//   console.log(`here`);
+// }
 // ----- ENTRY POINT FUNCTION ----- //
 const init = function() {
     /**
@@ -716,6 +719,8 @@ const init = function() {
     (0, _sidebarViewJsDefault.default).addHandlerManagerLinks(controlViewLinks);
     (0, _homepageViewJsDefault.default).addHandlerButtonsLinks(controlViewLinks);
     (0, _calculatorViewJsDefault.default).addHandlerGetFormData(controlCalculatorForm);
+    (0, _calculatorViewJsDefault.default).addHandlerModalWindowses();
+    (0, _calculatorViewJsDefault.default).addHandlerCloseModalWithBtn();
     (0, _barcodeViewJsDefault.default).addHandlerBarcodeScanner(controlBarcodeScanner);
     (0, _barcodeViewJsDefault.default).addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
     (0, _barcodeViewJsDefault.default).addHandlerCheckBarcode(controlGetProductFromBarcode);
@@ -8642,7 +8647,14 @@ class CalculatorView extends (0, _mainViewJsDefault.default) {
                 </select>
               </div>
 
-              <button class="btn calculate--calculator">Calculate</button>
+              <div class="btn-container">
+                <button type="submit" class="btn calculate--calculator">Calculate</button>
+                <button type="button" class="btn open-modal-window" data-dialogue="bmi">What's BMI?</button>
+                <button type="button" class="btn open-modal-window" data-dialogue="bmr">What's BMR?</button>
+                <button type="button" class="btn open-modal-window" data-dialogue="tef">What's TEF?</button>
+                <button type="button" class="btn open-modal-window" data-dialogue="tdee">What's TDEE?</button>
+              </div>
+
             </form>
           </div>
         </div>
@@ -8760,6 +8772,34 @@ class CalculatorView extends (0, _mainViewJsDefault.default) {
             subscriberFn(dataObj);
         }, true);
     }
+    addHandlerModalWindowses() {
+        this._mainElement.addEventListener(`click`, (e)=>{
+            // check if there is a btn
+            const openModalBtn = e.target.closest(`.open-modal-window`);
+            if (!openModalBtn) return;
+            // get the data attribute
+            const dataBtn = openModalBtn.dataset.dialogue;
+            // show the dialogue window which matches the data-attribute
+            const modalWindow = document.getElementById(`dialog--${dataBtn}`);
+            if (!modalWindow) return;
+            // open matching modal window
+            modalWindow.showModal();
+            // creating class property
+            this._modalWindow = modalWindow;
+            // to close clicking on overlay
+            modalWindow.addEventListener(`click`, (event)=>{
+                const dialogDimensions = modalWindow.getBoundingClientRect();
+                if (event.clientX < dialogDimensions.left || event.clientX > dialogDimensions.right || event.clientY < dialogDimensions.top || event.clientY > dialogDimensions.bottom) modalWindow.close();
+            });
+        });
+    }
+    addHandlerCloseModalWithBtn() {
+        document.addEventListener(`click`, (e)=>{
+            const btnClose = e.target.closest(`.close-modal`);
+            if (!btnClose) return;
+            this._modalWindow.close();
+        });
+    }
 }
 exports.default = new CalculatorView();
 
@@ -8865,17 +8905,12 @@ class HomepageView extends (0, _mainViewJsDefault.default) {
         />
         </div>
         <div class="homepage-content">
-            <h1>Welcome to EateryMeter</h1>
-            <h3>Your Ultimate Guide to Nutritious Living</h3>
-            <hr />
-            <p>
-                Discover the world of health and flavor with EateryMeter, your
-                go-to app for managing a balanced diet and lifestyle. From
-                calculating your BMI to unlocking the nutritional secrets of
-                fruits and packaged products, EateryMeter offers a comprehensive
-                suite of tools for food enthusiasts. Embrace a healthier,
-                informed, and tastier journey to wellness today.
-            </p>
+          <h1>Welcome to EateryMeter</h1>
+          <h3>Your Ultimate Guide to Health and Nutrition</h3>
+          <hr />
+          <p>
+            Navigate the world of wellness with EateryMeter, your premier digital partner for a healthy lifestyle. Whether you're looking to understand your body's needs through precise BMI, BMR, and TDEE calculations or eager to explore the detailed nutrition profile of everyday products, EateryMeter is here for you. With our advanced barcode scanning feature, uncover the vital details of ingredients, allergens, nutrients, brand information, and much more, right at your fingertips. Gear up for an empowered, well-informed journey towards better health and nutrition today.
+          </p>
             <div class="btn--container">
               <a href="#home" class="btn btn--hashlink noSelect" role="button">Home</a>
               <a href="#calculator" class="btn btn--hashlink noSelect" role="button">Calculator</a>
@@ -9048,6 +9083,11 @@ class BarcodeView extends (0, _mainViewJsDefault.default) {
           ${this._checkAndGenerateAllergensMarkup(product.allergens)}
 
           <h4>source: <a target="_blank" href="https://world.openfoodfacts.org/">OpenFoodFacts</a></h4>
+          <p class="disclaimer">
+            <strong>Product Info Disclaimer for EateryMeter</strong>
+            <br />
+            Information provided here is based on third-party sources and may not be accurate or current. Verify with the actual product. Use at your own risk.
+          </p>
         </div>
     `;
     }

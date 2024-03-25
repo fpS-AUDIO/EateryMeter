@@ -156,6 +156,10 @@ const controlGetProductFromBarcode = async function (barcodeValue) {
   }
 };
 
+// const controlModalWindowses = function(){
+//   console.log(`here`);
+// }
+
 // ----- ENTRY POINT FUNCTION ----- //
 
 const init = function () {
@@ -168,6 +172,8 @@ const init = function () {
   sidebarView.addHandlerManagerLinks(controlViewLinks);
   homepageView.addHandlerButtonsLinks(controlViewLinks);
   calculatorView.addHandlerGetFormData(controlCalculatorForm);
+  calculatorView.addHandlerModalWindowses();
+  calculatorView.addHandlerCloseModalWithBtn();
   barcodeView.addHandlerBarcodeScanner(controlBarcodeScanner);
   barcodeView.addHandlerStopBarcodeScanner(controlStopBarcodeScanner);
   barcodeView.addHandlerCheckBarcode(controlGetProductFromBarcode);

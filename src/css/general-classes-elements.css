@@ -21,6 +21,12 @@ h1 {
   outline: none !important;
 }
 
+.disclaimer {
+  width: 100%;
+  margin-top: 2rem;
+  text-align: center;
+}
+
 /* ----- ICONS AND IMAGES ----- */
 
 .image {
@@ -85,6 +91,7 @@ h1 {
   outline: none;
   overflow: hidden;
   position: relative;
+  /* position: inline-block; */
   text-align: center;
   text-decoration: none;
   transition: all var(--transition-time) ease;

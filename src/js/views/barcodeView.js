@@ -121,6 +121,11 @@ class BarcodeView extends MainView {
           ${this._checkAndGenerateAllergensMarkup(product.allergens)}
 
           <h4>source: <a target="_blank" href="https://world.openfoodfacts.org/">OpenFoodFacts</a></h4>
+          <p class="disclaimer">
+            <strong>Product Info Disclaimer for EateryMeter</strong>
+            <br />
+            Information provided here is based on third-party sources and may not be accurate or current. Verify with the actual product. Use at your own risk.
+          </p>
         </div>
     `;
   }

@@ -91,7 +91,14 @@ class CalculatorView extends MainView {
                 </select>
               </div>
 
-              <button class="btn calculate--calculator">Calculate</button>
+              <div class="btn-container">
+                <button type="submit" class="btn calculate--calculator">Calculate</button>
+                <button type="button" class="btn open-modal-window" data-dialogue="bmi">What's BMI?</button>
+                <button type="button" class="btn open-modal-window" data-dialogue="bmr">What's BMR?</button>
+                <button type="button" class="btn open-modal-window" data-dialogue="tef">What's TEF?</button>
+                <button type="button" class="btn open-modal-window" data-dialogue="tdee">What's TDEE?</button>
+              </div>
+
             </form>
           </div>
         </div>
@@ -240,6 +247,46 @@ class CalculatorView extends MainView {
       true
     );
   }
-  
+
+  addHandlerModalWindowses() {
+    this._mainElement.addEventListener(`click`, (e) => {
+      // check if there is a btn
+      const openModalBtn = e.target.closest(`.open-modal-window`);
+      if (!openModalBtn) return;
+      // get the data attribute
+      const dataBtn = openModalBtn.dataset.dialogue;
+
+      // show the dialogue window which matches the data-attribute
+      const modalWindow = document.getElementById(`dialog--${dataBtn}`);
+      if (!modalWindow) return;
+
+      // open matching modal window
+      modalWindow.showModal();
+
+      // creating class property
+      this._modalWindow = modalWindow;
+
+      // to close clicking on overlay
+      modalWindow.addEventListener(`click`, (event) => {
+        const dialogDimensions = modalWindow.getBoundingClientRect();
+        if (
+          event.clientX < dialogDimensions.left ||
+          event.clientX > dialogDimensions.right ||
+          event.clientY < dialogDimensions.top ||
+          event.clientY > dialogDimensions.bottom
+        ) {
+          modalWindow.close();
+        }
+      });
+    });
+  }
+
+  addHandlerCloseModalWithBtn() {
+    document.addEventListener(`click`, (e) => {
+      const btnClose = e.target.closest(`.close-modal`);
+      if (!btnClose) return;
+      this._modalWindow.close();
+    });
+  }
 }
 export default new CalculatorView();

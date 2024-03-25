@@ -1,0 +1,93 @@
+/*///////////////////
+// DIALOGS ////////////////////////////////////////////////////////
+///////////////////*/
+
+/* ----- DIALOGUE ----- */
+
+dialog.modal-window {
+  /* positioning */
+  position: fixed;
+  padding: 0.5em;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 10;
+
+  /* size */
+  width: 80vw;
+  font-size: 1.1rem;
+
+  /* styling */
+  color: var(--text-primary);
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 0;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-colors);
+  transition: all var(--transition-time) ease;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 600px) {
+  dialog.modal-window {
+    width: 85vw;
+  }
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .modal-window {
+    backdrop-filter: blur(10px);
+  }
+  .dialog::backdrop {
+    backdrop-filter: blur(10px);
+  }
+}
+
+.modal-window .x-close {
+  position: absolute;
+  top: 0.1rem;
+  right: 1rem;
+  font-size: 4rem;
+  color: #333;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.modal-window h2 {
+  margin-top: 1rem;
+}
+
+.modal-window ul {
+  list-style-position: outside;
+  padding-left: 1rem;
+}
+.modal-window li {
+  margin-top: 0.5rem;
+}
+
+/* formula */
+
+.modal-window .formula {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+.modal-window .fraction {
+  display: inline-block;
+  text-align: center;
+}
+
+.modal-window .line {
+  display: block;
+  border-top: 0.15rem solid #000;
+}
+
+.modal-window .weight,
+.modal-window .height {
+  display: block;
+  padding: 0.4rem;
+}
