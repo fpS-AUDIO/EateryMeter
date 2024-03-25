@@ -650,9 +650,7 @@ const controlCalculatorForm = function(data) {
         (0, _calculatorViewJsDefault.default).renderErrorWrongValue();
         return;
     }
-    // -----> if everything is correct:
-    // 0. save data to make result sentece
-    _modelJs.saveSummurySentenceData(data);
+    // if everything is correct:
     // 1. calculate BMI
     _modelJs.calculateUpdateBMI(data);
     // console.log(model.state.bmi.currentLevel);
@@ -660,13 +658,11 @@ const controlCalculatorForm = function(data) {
     _modelJs.calculateUpdateBMR(data);
     // 3. calculate TDEE
     _modelJs.calculateUpdateTDEE(data);
-    // 4. calculate Macronutrient Distribution
-    _modelJs.calculateUpdateMacronutrientDistr(data);
-    // 5. get all data to generate markup
+    // 4. get all data to generate markup
     _modelJs.setHealthMetricsSummury();
-    // 6. generate result markup html for UI
+    // 5. generate result markup html for UI
     const resultMarkup = (0, _calculatorViewJsDefault.default).generateResultMarkup(_modelJs.state.summuryHealthData);
-    // 7. remove old result (if there are) and render new on page
+    // 6. remove old result (if there are) and render new on page
     (0, _calculatorViewJsDefault.default).renderResults(resultMarkup, _modelJs.state.summuryHealthData);
 };
 const controlBarcodeScanner = function() {
@@ -8247,11 +8243,9 @@ parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "updateHash", ()=>updateHash);
 parcelHelpers.export(exports, "registerRoute", ()=>registerRoute);
 parcelHelpers.export(exports, "updateCurrentView", ()=>updateCurrentView);
-parcelHelpers.export(exports, "saveSummurySentenceData", ()=>saveSummurySentenceData);
 parcelHelpers.export(exports, "calculateUpdateBMI", ()=>calculateUpdateBMI);
 parcelHelpers.export(exports, "calculateUpdateBMR", ()=>calculateUpdateBMR);
 parcelHelpers.export(exports, "calculateUpdateTDEE", ()=>calculateUpdateTDEE);
-parcelHelpers.export(exports, "calculateUpdateMacronutrientDistr", ()=>calculateUpdateMacronutrientDistr);
 parcelHelpers.export(exports, "setHealthMetricsSummury", ()=>setHealthMetricsSummury);
 parcelHelpers.export(exports, "getBarcode", ()=>getBarcode);
 parcelHelpers.export(exports, "getProduct", ()=>getProduct);
@@ -8325,26 +8319,6 @@ const state = {
             }
         }
     },
-    macronutrientsDistribution: {
-        distrib: {
-            carbsPercentage: null,
-            proteinPercentage: null,
-            fatPercentage: null
-        },
-        grams: {
-            carbs: null,
-            proteins: null,
-            fats: null
-        }
-    },
-    summurySentence: {
-        age: null,
-        gender: null,
-        height: null,
-        weight: null,
-        sport: null,
-        goal: null
-    },
     summuryHealthData: null
 };
 // ----- HELPER FUNCTIONS ----- //
@@ -8371,40 +8345,6 @@ const registerRoute = function(hash, view) {
 const updateCurrentView = function(hash) {
     // updates state: update current view
     state.currentView = state.routes[hash];
-};
-const saveSummurySentenceData = function(data) {
-    state.summurySentence.age = data.age;
-    state.summurySentence.gender = data.gender;
-    state.summurySentence.height = data.height;
-    state.summurySentence.weight = data.weight;
-    switch(data.goal){
-        case "weight":
-            state.summurySentence.goal = `weight loss`;
-            break;
-        case "muscle":
-            state.summurySentence.goal = `muscle gain`;
-            break;
-        case "maintenance":
-            state.summurySentence.goal = `nutritional balance`;
-            break;
-    }
-    switch(data.pal){
-        case "1.2":
-            state.summurySentence.sport = `sedentary`;
-            break;
-        case "1.375":
-            state.summurySentence.sport = `lightly active`;
-            break;
-        case "1.55":
-            state.summurySentence.sport = `moderately active`;
-            break;
-        case "1.725":
-            state.summurySentence.sport = `very active`;
-            break;
-        case "1.9":
-            state.summurySentence.sport = `extra active`;
-            break;
-    }
 };
 const calculateUpdateBMI = function(data) {
     // FORMULA to Calculate Body Mass Index:
@@ -8440,46 +8380,12 @@ const calculateUpdateTDEE = function(data) {
     const tdeeWithTEF = state.tdee * 1.1;
     state.tdeeWith10TEF = tdeeWithTEF;
 };
-const calculateUpdateMacronutrientDistr = function(data) {
-    // FORMULA:
-    // Weight Loss: 40% Carbohydrates, 35% Protein, 25% Fat
-    // Muscle Gain: 50% Carbohydrates, 30% Protein, 20% Fat
-    // Maintenance: 50% Carbohydrates, 20% Protein, 30% Fat
-    // set percentage basing on user's choice
-    if (data.goal === `weight`) {
-        state.macronutrientsDistribution.distrib.carbsPercentage = 0.4;
-        state.macronutrientsDistribution.distrib.proteinPercentage = 0.35;
-        state.macronutrientsDistribution.distrib.fatPercentage = 0.25;
-    } else if (data.goal === `muscle`) {
-        state.macronutrientsDistribution.distrib.carbsPercentage = 0.5;
-        state.macronutrientsDistribution.distrib.proteinPercentage = 0.3;
-        state.macronutrientsDistribution.distrib.fatPercentage = 0.2;
-    } else if (data.goal === `maintenance`) {
-        state.macronutrientsDistribution.distrib.carbsPercentage = 0.5;
-        state.macronutrientsDistribution.distrib.proteinPercentage = 0.2;
-        state.macronutrientsDistribution.distrib.fatPercentage = 0.3;
-    }
-    // set local variables
-    const carbsPercentage = state.macronutrientsDistribution.distrib.carbsPercentage;
-    const proteinPercentage = state.macronutrientsDistribution.distrib.proteinPercentage;
-    const fatPercentage = state.macronutrientsDistribution.distrib.fatPercentage;
-    // calculate acutal grams of macronutrients
-    const carbsGrams = state.tdeeWith10TEF * carbsPercentage / 4;
-    const proteinGrams = state.tdeeWith10TEF * proteinPercentage / 4;
-    const fatGrams = state.tdeeWith10TEF * fatPercentage / 9;
-    //update state
-    state.macronutrientsDistribution.grams.carbs = Math.round(carbsGrams);
-    state.macronutrientsDistribution.grams.proteins = Math.round(proteinGrams);
-    state.macronutrientsDistribution.grams.fats = Math.round(fatGrams);
-};
 const setHealthMetricsSummury = function() {
     state.summuryHealthData = {
         bmi: state.bmi.currentLevel,
         bmr: Math.round(state.bmr),
         tdee: Math.round(state.tdee),
-        tdeeWithEstimatedTEF: Math.round(state.tdeeWith10TEF),
-        distribution: state.macronutrientsDistribution,
-        summurySentence: state.summurySentence
+        tdeeWithEstimatedTEF: Math.round(state.tdeeWith10TEF)
     };
 };
 const getBarcode = function(domElement) {
@@ -8741,23 +8647,6 @@ class CalculatorView extends (0, _mainViewJsDefault.default) {
                 </select>
               </div>
 
-              <div class="form__select-row">
-                <label class="form__label">Health and fitness goal</label>
-                <select required name="goal">
-                  <option value="">--Please choose an option--</option>
-                  <option value="weight">
-                    Weight Loss
-                  </option>
-                  <option value="muscle">
-                    Muscle Gain
-                  </option>
-                  <option value="maintenance">
-                    Maintenance
-                  </option>
-                </select>
-              </div>
-
-
               <div class="btn-container">
                 <button type="submit" class="btn calculate--calculator noSelect">Calculate</button>
                 <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="bmi" aria-label="Learn more about Body Mass Index (BMI)">What's BMI?</button>
@@ -8783,11 +8672,6 @@ class CalculatorView extends (0, _mainViewJsDefault.default) {
     _updateResultsStyle(healthData) {
         this._mainElement.querySelector(`.calculator-container-result`).style.borderColor = healthData.bmi.color;
     }
-    _generateSummarySentence(healthData) {
-        return `
-    <h3 class="summary-sentence">You are a ${healthData.summurySentence.age} year old ${healthData.summurySentence.gender}, standing ${healthData.summurySentence.height} cm tall, weighing ${healthData.summurySentence.weight} kg. Your current level of physical activity is classified as '${healthData.summurySentence.sport}', and you have set your health and fitness goal to '${healthData.summurySentence.goal}'.</h3>
-    `;
-    }
     _checkOrRemoveElement(className) {
         return new Promise((resolve, reject)=>{
             // check if there is already this element on page
@@ -8809,7 +8693,6 @@ class CalculatorView extends (0, _mainViewJsDefault.default) {
     generateResultMarkup(healthData) {
         return `
     <div class="container calculator-container-result calc-secondary--box hidden-right">
-        ${this._generateSummarySentence(healthData)}
         <h2>Your Personal Health Metrics Results:</h2>
         <div class="form__row">
           <h3>BMI:</h3>
@@ -8827,25 +8710,10 @@ class CalculatorView extends (0, _mainViewJsDefault.default) {
           <h3>TDEE (+10% TEF):</h3>
           <h3 class="tdee--result--number">${healthData.tdeeWithEstimatedTEF} kcal per day</h3>
         </div>
-
-        <h2>Your Custom Macronutrient Plan:</h2>
-          <div class="form__row">
-            <h3>carbohydrates (${healthData.distribution.distrib.carbsPercentage * 100}%):</h3>
-            <h3>${healthData.distribution.grams.carbs}g</h3>
-          </div>
-          <div class="form__row">
-            <h3>proteins (${healthData.distribution.distrib.proteinPercentage * 100}%):</h3>
-            <h3>${healthData.distribution.grams.proteins}g</h3>
-          </div>
-          <div class="form__row">
-            <h3>fats (${healthData.distribution.distrib.fatPercentage * 100}%):</h3>
-            <h3>${healthData.distribution.grams.fats}g</h3>
-        </div>
-
         <p class="disclaimer">
           <strong>Health Disclaimer for EateryMeter</strong>
           <br />
-          EateryMeter's health metrics (BMI, BMR, TDEE) and suggested ratios of carbohydrates, proteins, and fats are general guides,
+          EateryMeter's health metrics (BMI, BMR, TDEE) are general guides,
           not medical advice. Individual health varies. Always consult a
           healthcare provider for personal advice. Use at your own risk.
         </p>

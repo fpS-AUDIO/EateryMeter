@@ -43,8 +43,10 @@
   border-color: green;
 }
 
-.calculator-view .calculator-error h3 {
+.calculator-view .summary-sentence {
   text-align: center;
 }
 
-
+.calculator-view .calculator-error h3 {
+  text-align: center;
+}

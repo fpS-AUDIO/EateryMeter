@@ -91,12 +91,30 @@ class CalculatorView extends MainView {
                 </select>
               </div>
 
+              <div class="form__select-row">
+                <label class="form__label">Health and fitness goal</label>
+                <select required name="goal">
+                  <option value="">--Please choose an option--</option>
+                  <option value="weight">
+                    Weight Loss
+                  </option>
+                  <option value="muscle">
+                    Muscle Gain
+                  </option>
+                  <option value="maintenance">
+                    Maintenance
+                  </option>
+                </select>
+              </div>
+
+
               <div class="btn-container">
-                <button type="submit" class="btn calculate--calculator">Calculate</button>
-                <button type="button" class="btn open-modal-window" data-dialogue="bmi">What's BMI?</button>
-                <button type="button" class="btn open-modal-window" data-dialogue="bmr">What's BMR?</button>
-                <button type="button" class="btn open-modal-window" data-dialogue="tef">What's TEF?</button>
-                <button type="button" class="btn open-modal-window" data-dialogue="tdee">What's TDEE?</button>
+                <button type="submit" class="btn calculate--calculator noSelect">Calculate</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="bmi" aria-label="Learn more about Body Mass Index (BMI)">What's BMI?</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="bmr" aria-label="Learn more about Basal Metabolic Rate (BMR)">What's BMR?</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="tef" aria-label="Learn more about Thermic Effect of Food (TEF)">What's TEF?</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="tdee" aria-label="Learn more about Total Daily Energy Expenditure (TDEE)">What's TDEE?</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="macronutrients" aria-label="Learn more about macronutrient distribution">Macro Split?</button>
               </div>
 
             </form>
@@ -118,6 +136,12 @@ class CalculatorView extends MainView {
     this._mainElement.querySelector(
       `.calculator-container-result`
     ).style.borderColor = healthData.bmi.color;
+  }
+
+  _generateSummarySentence(healthData) {
+    return `
+    <h3 class="summary-sentence">You are a ${healthData.summurySentence.age} year old ${healthData.summurySentence.gender}, standing ${healthData.summurySentence.height} cm tall, weighing ${healthData.summurySentence.weight} kg. Your current level of physical activity is classified as '${healthData.summurySentence.sport}', and you have set your health and fitness goal to '${healthData.summurySentence.goal}'.</h3>
+    `;
   }
 
   _checkOrRemoveElement(className) {
@@ -145,10 +169,13 @@ class CalculatorView extends MainView {
   generateResultMarkup(healthData) {
     return `
     <div class="container calculator-container-result calc-secondary--box hidden-right">
+        ${this._generateSummarySentence(healthData)}
         <h2>Your Personal Health Metrics Results:</h2>
         <div class="form__row">
           <h3>BMI:</h3>
-          <h3 class="bmi--result--number">${healthData.bmi.bmiValue} (${healthData.bmi.description})</h3>
+          <h3 class="bmi--result--number">${healthData.bmi.bmiValue} (${
+      healthData.bmi.description
+    })</h3>
         </div>
         <div class="form__row">
           <h3>BMR:</h3>
@@ -160,12 +187,35 @@ class CalculatorView extends MainView {
         </div>
         <div class="form__row">
           <h3>TDEE (+10% TEF):</h3>
-          <h3 class="tdee--result--number">${healthData.tdeeWithEstimatedTEF} kcal per day</h3>
+          <h3 class="tdee--result--number">${
+            healthData.tdeeWithEstimatedTEF
+          } kcal per day</h3>
         </div>
+
+        <h2>Your Custom Macronutrient Plan:</h2>
+          <div class="form__row">
+            <h3>carbohydrates (${
+              healthData.distribution.distrib.carbsPercentage * 100
+            }%):</h3>
+            <h3>${healthData.distribution.grams.carbs}g</h3>
+          </div>
+          <div class="form__row">
+            <h3>proteins (${
+              healthData.distribution.distrib.proteinPercentage * 100
+            }%):</h3>
+            <h3>${healthData.distribution.grams.proteins}g</h3>
+          </div>
+          <div class="form__row">
+            <h3>fats (${
+              healthData.distribution.distrib.fatPercentage * 100
+            }%):</h3>
+            <h3>${healthData.distribution.grams.fats}g</h3>
+        </div>
+
         <p class="disclaimer">
           <strong>Health Disclaimer for EateryMeter</strong>
           <br />
-          EateryMeter's health metrics (BMI, BMR, TDEE) are general guides,
+          EateryMeter's health metrics (BMI, BMR, TDEE) and suggested ratios of carbohydrates, proteins, and fats are general guides,
           not medical advice. Individual health varies. Always consult a
           healthcare provider for personal advice. Use at your own risk.
         </p>

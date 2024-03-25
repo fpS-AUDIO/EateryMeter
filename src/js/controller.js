@@ -83,7 +83,10 @@ const controlCalculatorForm = function (data) {
     return;
   }
 
-  // if everything is correct:
+  // -----> if everything is correct:
+
+  // 0. save data to make result sentece
+  model.saveSummurySentenceData(data);
 
   // 1. calculate BMI
   model.calculateUpdateBMI(data);
@@ -95,15 +98,18 @@ const controlCalculatorForm = function (data) {
   // 3. calculate TDEE
   model.calculateUpdateTDEE(data);
 
-  // 4. get all data to generate markup
+  // 4. calculate Macronutrient Distribution
+  model.calculateUpdateMacronutrientDistr(data);
+
+  // 5. get all data to generate markup
   model.setHealthMetricsSummury();
 
-  // 5. generate result markup html for UI
+  // 6. generate result markup html for UI
   const resultMarkup = calculatorView.generateResultMarkup(
     model.state.summuryHealthData
   );
 
-  // 6. remove old result (if there are) and render new on page
+  // 7. remove old result (if there are) and render new on page
   calculatorView.renderResults(resultMarkup, model.state.summuryHealthData);
 };
 

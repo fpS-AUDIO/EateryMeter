@@ -39,7 +39,7 @@
   border-bottom-left-radius: 0;
 }
 
-.calculator-view .calculator-error h3 {
+.calculator-view .summary-sentence, .calculator-view .calculator-error h3 {
   text-align: center;
 }
 /*# sourceMappingURL=index.abe9bb72.css.map */

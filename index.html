@@ -258,12 +258,29 @@
                 </select>
               </div>
 
+              <div class="form__select-row">
+                <label class="form__label">Health and fitness goal</label>
+                <select required name="goal">
+                  <option value="">--Please choose an option--</option>
+                  <option value="weight">
+                    Weight Loss
+                  </option>
+                  <option value="muscle">
+                    Muscle Gain
+                  </option>
+                  <option value="maintenance">
+                    Maintenance
+                  </option>
+                </select>
+              </div>
+
               <div class="btn-container">
-                <button type="submit" class="btn calculate--calculator">Calculate</button>
-                <button type="button" class="btn open-modal-window" data-dialogue="bmi">What's BMI?</button>
-                <button type="button" class="btn open-modal-window" data-dialogue="bmr">What's BMR?</button>
-                <button type="button" class="btn open-modal-window" data-dialogue="tef">What's TEF?</button>
-                <button type="button" class="btn open-modal-window" data-dialogue="tdee">What's TDEE?</button>
+                <button type="submit" class="btn calculate--calculator noSelect">Calculate</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="bmi" aria-label="Learn more about Body Mass Index (BMI)">What's BMI?</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="bmr" aria-label="Learn more about Basal Metabolic Rate (BMR)">What's BMR?</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="tef" aria-label="Learn more about Thermic Effect of Food (TEF)">What's TEF?</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="tdee" aria-label="Learn more about Total Daily Energy Expenditure (TDEE)">What's TDEE?</button>
+                <button type="button" class="btn dialogueBtn open-modal-window noSelect" data-dialogue="macronutrients" aria-label="Learn more about macronutrient distribution">Macro Split?</button>
               </div>
 
             </form>
@@ -271,6 +288,7 @@
         </div> -->
 
         <!-- <div class="container calculator-container-result calc-secondary--box hidden-right">
+          <h3 class="summary-sentence">You are a 30 year old male, standing 180 cm tall, weighing 75 kg. Your current level of physical activity is classified as 'Moderately active', and you have set your health and fitness goal to 'Weight loss'.</h3>
           <h2>Your Personal Health Metrics Results:</h2>
           <div class="form__row">
             <h3>BMI:</h3>
@@ -288,10 +306,25 @@
             <h3>TDEE (+10% TEF):</h3>
             <h3 class="tdee--result--number">2874.3 kcal per day</h3>
           </div>
+
+          <h2>Your Custom Macronutrient Plan:</h2>
+          <div class="form__row">
+            <h3>carbohydrates (50%):</h3>
+            <h3>359g</h3>
+          </div>
+          <div class="form__row">
+            <h3>proteins (20%):</h3>
+            <h3>144g</h3>
+          </div>
+          <div class="form__row">
+            <h3>fats (30%):</h3>
+            <h3>96g</h3>
+          </div>
+          
           <p class="disclaimer">
             <strong>Health Disclaimer for EateryMeter</strong>
             <br />
-            EateryMeter's health metrics (BMI, BMR, TDEE) are general guides,
+            EateryMeter's health metrics (BMI, BMR, TDEE) and suggested ratios of carbohydrates, proteins, and fats are general guides,
             not medical advice. Individual health varies. Always consult a
             healthcare provider for personal advice. Use at your own risk.
           </p>
@@ -491,7 +524,7 @@
             to provide a more complete picture of an individual's health.
           </li>
         </ul>
-        <button type="button" class="btn close-modal">Close</button>
+        <button type="button" class="btn close-modal noSelect">Close</button>
       </dialog>
 
       <dialog id="dialog--bmr" class="modal-window dialog">
@@ -549,7 +582,7 @@
             activity.
           </li>
         </ul>
-        <button type="button" class="btn close-modal">Close</button>
+        <button type="button" class="btn close-modal noSelect">Close</button>
       </dialog>
 
       <dialog id="dialog--tef" class="modal-window dialog">
@@ -609,7 +642,7 @@
             individual differences in metabolism.
           </li>
         </ul>
-        <button type="button" class="btn close-modal">Close</button>
+        <button type="button" class="btn close-modal noSelect">Close</button>
       </dialog>
 
       <dialog id="dialog--tdee" class="modal-window dialog">
@@ -682,11 +715,95 @@
             weight.
           </li>
         </ul>
-        <button type="button" class="btn close-modal">Close</button>
+        <button type="button" class="btn close-modal noSelect">Close</button>
       </dialog>
-      <!-- <article class="article what-is-bmi">
-            
-          </article> -->
+
+      <dialog id="dialog--macronutrients" class="modal-window dialog">
+        <button class="close-modal x-close noSelect">&times;</button>
+        <h2>What is Macronutrient Distribution?</h2>
+        <p>
+          Macronutrient distribution refers to the ratio of carbohydrates,
+          proteins, and fats that an individual consumes as part of their total
+          daily calorie intake. This distribution is key to achieving specific
+          health and fitness goals, such as weight loss, muscle gain, or
+          maintaining a healthy weight. Each macronutrient plays a unique role
+          in the body, contributing to energy production, muscle repair, and
+          overall metabolic function.
+        </p>
+
+        <h2>How to Determine Your Macronutrient Ratios</h2>
+        <p>
+          Determining your ideal macronutrient ratios involves considering your
+          Total Daily Energy Expenditure (TDEE) and your specific health and
+          fitness goals. The distribution of macronutrients can significantly
+          impact your ability to lose fat, build muscle, or maintain your
+          current physique in a healthy manner.
+        </p>
+
+        <h2>Guidelines for Macronutrient Ratios Based on Goals</h2>
+        <p>
+          Once you know your goals, you can apply different macronutrient ratios
+          to your diet. These are general guidelines and should be adjusted
+          based on personal needs, preferences, and feedback:
+        </p>
+        <ul>
+          <li>
+            <strong>Weight Loss:</strong> 40% Carbohydrates, 35% Protein, 25%
+            Fat
+          </li>
+          <li>
+            <strong>Muscle Gain:</strong> 50% Carbohydrates, 30% Protein, 20%
+            Fat
+          </li>
+          <li>
+            <strong>Maintenance:</strong> 50% Carbohydrates, 20% Protein, 30%
+            Fat
+          </li>
+        </ul>
+
+        <h2>Interesting Facts about Macronutrient Distribution</h2>
+        <ul>
+          <li>
+            <strong>Flexibility in Ratios:</strong> There is no
+            one-size-fits-all ratio for macronutrient distribution. Individuals
+            may need to experiment with different ratios to find what works best
+            for their body and goals.
+          </li>
+          <li>
+            <strong>Impact on Metabolism:</strong> Your macronutrient
+            distribution can influence your metabolic rate and how your body
+            uses energy, affecting your overall health and weight.
+          </li>
+          <li>
+            <strong>Cultural and Dietary Preferences:</strong> Macronutrient
+            needs and preferences can vary significantly across different
+            cultures and dietary restrictions, requiring personalized
+            adjustments.
+          </li>
+          <li>
+            <strong>Evolution of Dietary Science:</strong> As nutritional
+            science evolves, so too do the recommendations for macronutrient
+            distribution, emphasizing the importance of staying informed about
+            the latest research.
+          </li>
+          <li>
+            <strong>Role in Preventing and Managing Chronic Diseases:</strong>
+            Proper macronutrient distribution can play a crucial role in the
+            prevention and management of chronic diseases, including diabetes,
+            heart disease, and obesity.
+          </li>
+        </ul>
+
+        <p>
+          Remember, these macronutrient distribution guidelines are starting
+          points. It's important to listen to your body and adjust your diet
+          based on how you feel, your performance, and your health goals.
+          Consulting with a nutrition professional can also provide personalized
+          guidance tailored to your individual needs.
+        </p>
+
+        <button type="button" class="btn close-modal noSelect">Close</button>
+      </dialog>
 
       <!-- ============== FOOTER ==============  -->
 
@@ -713,7 +830,7 @@
             </a>
           </div>
           <div class="social-links--link">
-            <a target="_blank" href="https://discordapp.com/users/SAUDIO#5715">
+            <a target="_blank" href="https://discord.gg/wScqCDvRZK">
               <img
                 class="social-img"
                 src="./src/img/icons-discord.svg"

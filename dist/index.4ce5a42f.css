@@ -86,6 +86,7 @@ h1 {
 
 .btn:hover {
   background-color: var(--button-bg-color-hover);
+  box-shadow: var(--shadow-colors-hover);
   opacity: 1;
 }
 
@@ -93,8 +94,12 @@ h1 {
   transform: translateY(2px);
 }
 
-.btn:hover {
-  box-shadow: var(--shadow-colors-hover);
+.btn.dialogueBtn {
+  background-color: var(--button-dialogue-bg-color);
+}
+
+.btn.dialogueBtn:hover {
+  background-color: var(--button-dialogue-bg-color-hover);
 }
 
 .form__row {
@@ -154,6 +159,7 @@ input[type="radio"] {
 
 .form__select-row {
   flex-direction: column;
+  margin-top: 1rem;
   display: flex;
 }
 

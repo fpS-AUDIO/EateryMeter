@@ -67,6 +67,26 @@ export const state = {
       },
     },
   },
+  macronutrientsDistribution: {
+    distrib: {
+      carbsPercentage: null,
+      proteinPercentage: null,
+      fatPercentage: null,
+    },
+    grams: {
+      carbs: null,
+      proteins: null,
+      fats: null,
+    },
+  },
+  summurySentence: {
+    age: null,
+    gender: null,
+    height: null,
+    weight: null,
+    sport: null,
+    goal: null,
+  },
   summuryHealthData: null,
 };
 
@@ -104,6 +124,43 @@ export const registerRoute = function (hash, view) {
 export const updateCurrentView = function (hash) {
   // updates state: update current view
   state.currentView = state.routes[hash];
+};
+
+export const saveSummurySentenceData = function (data) {
+  state.summurySentence.age = data.age;
+  state.summurySentence.gender = data.gender;
+  state.summurySentence.height = data.height;
+  state.summurySentence.weight = data.weight;
+
+  switch (data.goal) {
+    case "weight":
+      state.summurySentence.goal = `weight loss`;
+      break;
+    case "muscle":
+      state.summurySentence.goal = `muscle gain`;
+      break;
+    case "maintenance":
+      state.summurySentence.goal = `nutritional balance`;
+      break;
+  }
+
+  switch (data.pal) {
+    case "1.2":
+      state.summurySentence.sport = `sedentary`;
+      break;
+    case "1.375":
+      state.summurySentence.sport = `lightly active`;
+      break;
+    case "1.55":
+      state.summurySentence.sport = `moderately active`;
+      break;
+    case "1.725":
+      state.summurySentence.sport = `very active`;
+      break;
+    case "1.9":
+      state.summurySentence.sport = `extra active`;
+      break;
+  }
 };
 
 export const calculateUpdateBMI = function (data) {
@@ -151,12 +208,53 @@ export const calculateUpdateTDEE = function (data) {
   state.tdeeWith10TEF = tdeeWithTEF;
 };
 
+export const calculateUpdateMacronutrientDistr = function (data) {
+  // FORMULA:
+  // Weight Loss: 40% Carbohydrates, 35% Protein, 25% Fat
+  // Muscle Gain: 50% Carbohydrates, 30% Protein, 20% Fat
+  // Maintenance: 50% Carbohydrates, 20% Protein, 30% Fat
+
+  // set percentage basing on user's choice
+  if (data.goal === `weight`) {
+    state.macronutrientsDistribution.distrib.carbsPercentage = 0.4;
+    state.macronutrientsDistribution.distrib.proteinPercentage = 0.35;
+    state.macronutrientsDistribution.distrib.fatPercentage = 0.25;
+  } else if (data.goal === `muscle`) {
+    state.macronutrientsDistribution.distrib.carbsPercentage = 0.5;
+    state.macronutrientsDistribution.distrib.proteinPercentage = 0.3;
+    state.macronutrientsDistribution.distrib.fatPercentage = 0.2;
+  } else if (data.goal === `maintenance`) {
+    state.macronutrientsDistribution.distrib.carbsPercentage = 0.5;
+    state.macronutrientsDistribution.distrib.proteinPercentage = 0.2;
+    state.macronutrientsDistribution.distrib.fatPercentage = 0.3;
+  }
+
+  // set local variables
+  const carbsPercentage =
+    state.macronutrientsDistribution.distrib.carbsPercentage;
+  const proteinPercentage =
+    state.macronutrientsDistribution.distrib.proteinPercentage;
+  const fatPercentage = state.macronutrientsDistribution.distrib.fatPercentage;
+
+  // calculate acutal grams of macronutrients
+  const carbsGrams = (state.tdeeWith10TEF * carbsPercentage) / 4;
+  const proteinGrams = (state.tdeeWith10TEF * proteinPercentage) / 4;
+  const fatGrams = (state.tdeeWith10TEF * fatPercentage) / 9;
+
+  //update state
+  state.macronutrientsDistribution.grams.carbs = Math.round(carbsGrams);
+  state.macronutrientsDistribution.grams.proteins = Math.round(proteinGrams);
+  state.macronutrientsDistribution.grams.fats = Math.round(fatGrams);
+};
+
 export const setHealthMetricsSummury = function () {
   state.summuryHealthData = {
     bmi: state.bmi.currentLevel,
-    bmr: state.bmr.toFixed(2),
-    tdee: state.tdee.toFixed(2),
-    tdeeWithEstimatedTEF: state.tdeeWith10TEF.toFixed(2),
+    bmr: Math.round(state.bmr),
+    tdee: Math.round(state.tdee),
+    tdeeWithEstimatedTEF: Math.round(state.tdeeWith10TEF),
+    distribution: state.macronutrientsDistribution,
+    summurySentence: state.summurySentence,
   };
 };
 
